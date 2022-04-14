@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Options</title>
+        <link rel="stylesheet" href="index.css">
+        <script src="jquery-3.6.0.min.js"></script>
+        <script>
+            $(document).ready(function(){
+                
+                /*redirects for color buttons, passing arguments with CGI*/
+                $('#green').click(function(){
+                    window.location.href = '/cgi?bgcolor=green';
+                    return false;
+                });
+                $('#red').click(function(){
+                    window.location.href = '/cgi?bgcolor=red';
+                    return false;
+                });
+                $('#magenta').click(function(){
+                    window.location.href = '/cgi?bgcolor=magenta';
+                    return false;
+                });
+                $('#blue').click(function(){
+                    window.location.href = '/cgi?bgcolor=blue';
+                    return false;
+                });
+
+            });
+        </script>
+    </head>
+    <body>
+        <h1 id="title">OPTIONS</h1>
+
+        <div>
+            <button id='green' class="colorbutton">GREEN</button>
+            <button id='blue' class="colorbutton">BLUE</button>
+            <button id='red' class="colorbutton">RED</button>
+            <button id='magenta' class="colorbutton">MAGENTA</button>
+        </div>
+    </body>
+</html>

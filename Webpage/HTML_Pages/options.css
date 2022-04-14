@@ -1,0 +1,24 @@
+body{
+    background-color: black;
+}
+
+h1#title{
+    color:white;
+    text-align: left;
+}
+
+button#red{
+    color: red;
+}
+
+button#blue{
+    color: blue;
+}
+
+button#magenta{
+    color: magenta;
+}
+
+button#green{
+    color:green;
+}

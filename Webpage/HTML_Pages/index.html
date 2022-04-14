@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>index page</title>
+        <link rel="stylesheet" href="index.css">
+        <script src="jquery-3.6.0.min.js"></script>
+        <script>
+            $(document).ready(function(){
+                /*Button to go to Options*/
+                $("#options_button").click(function(){
+                    window.location.href = '/options.html';
+                    return false;
+                });
+
+                /*Button to go to platformio info*/
+                $("#pio_button").click(function(){
+                    window.location.href = '/platformio_info.html';
+                    return false;
+                });
+            }); 
+        </script>
+    </head>
+    <body>
+        <h1 id="title">INDEX</h1>
+        <p>test</p>
+        <p>nog meer testen</p>
+
+        <button id="options_button">OPTIONS</button>
+        <button id="pio_button">PIO INFO</button>
+    </body>
+</html>

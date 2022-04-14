@@ -1,0 +1,44 @@
+{
+	"folders": [
+		{
+			"name": "Example project STM",
+			"path": "..\\..\\..\\Users\\stijn\\Documents\\PlatformIO\\Projects\\Example project STM"
+		},
+		{
+			"name": "Webserver_PlatformIO",
+			"path": ".."
+		},
+		{
+			"path": "..\\..\\Webpage\\HTML_Pages"
+		}
+	],
+	"settings": {
+		"files.associations": {
+			"stm32f746xx.h": "c",
+			"stm32f7xx.h": "c",
+			"stm32f7xx_hal.h": "c",
+			"stm32f7xx_hal_conf.h": "c",
+			"main.h": "c",
+			"lvgl.h": "c",
+			"lv_log.h": "c",
+			"lv_conf_internal.h": "c",
+			"lv_conf_kconfig.h": "c",
+			"led1_test.h": "c",
+			"lwip.h": "c",
+			"example.h": "c",
+			"opt.h": "c",
+			"debug.h": "c",
+			"arch.h": "c",
+			"ltdc.h": "c",
+			"altcp_tls.h": "c",
+			"lwipopts.h": "c",
+			"altcp.h": "c",
+			"gpio.h": "c",
+			"fatfs.h": "c",
+			"stm32746g_discovery.h": "c",
+			"stm32_adafruit_lcd.h": "c",
+			"stm32746g_discovery_lcd.h": "c",
+			"stm32746g_discovery_ts.h": "c"
+		}
+	}
+}

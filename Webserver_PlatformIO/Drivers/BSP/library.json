@@ -1,0 +1,19 @@
+{
+    "name": "BSP_STM32f746G-DISCO",
+    "version": "1.0.0",
+    "description": "BSP package for LCD & TS support",
+    "keywords": "BSP",
+    "frameworks": "*",
+    "platforms": "*",
+    "export": {
+        "include":
+        [
+            "inc/*.h",
+            "src/*.c",
+            "drivers/*.c",
+            "drivers/*.h",
+            "components/*.h",
+            "components/*.c"
+        ]
+    }
+  }

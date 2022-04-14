@@ -1,0 +1,8 @@
+body{
+    background-color: darkblue;
+}
+
+h1#title{
+    color:yellow;
+    text-align: right;
+}

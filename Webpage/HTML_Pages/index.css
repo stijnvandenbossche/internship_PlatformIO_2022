@@ -1,0 +1,8 @@
+body{
+    background-color: darkgreen;
+}
+
+h1#title{
+    color:blueviolet;
+    text-align: center;
+}

@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>platformio_info</title>
+        <link rel="stylesheet" href="platformio_info.css">
+        <script src="jquery-3.6.0.min.js"></script>
+    </head>
+    <body>
+        <h1 id="title">PIO INFO</h1>
+        <p>
+            Compiled on <!--#DATE-->, at <!--#TIME-->.
+            With LWIP version <!--#LWIPVERS-->.
+        </p>
+    </body>
+</html>
