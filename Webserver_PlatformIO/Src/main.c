@@ -586,7 +586,6 @@ void drawMenu(){
 void drawPIOLogo(){
   /*Calling custom draw function that uses DMA2D*/
   drawBitmapImage(pio_logo.data,pio_logo.base_element.locationX,pio_logo.base_element.locationY,pio_logo.base_element.width,pio_logo.base_element.height,pio_logo.format);
-  //WDA_LCD_DrawBitmap(pio_logo.data,pio_logo.base_element.locationX,pio_logo.base_element.locationY,pio_logo.base_element.width,pio_logo.base_element.height,pio_logo.format);
   return;
 }
 
