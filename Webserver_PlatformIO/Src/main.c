@@ -95,7 +95,7 @@
 /*Default values for IP Address*/
 #define IP_ADDRESS_HEIGHT 35
 #define IP_ADDRESS_WIDTH 150
-#define IP_ADDRESS_LOCATION_X 150
+#define IP_ADDRESS_LOCATION_X 140
 #define IP_ADDRESS_LOCATION_Y 10
 #define IP_ADDRESS_COLOR LCD_COLOR_BLACK
 #define IP_ADDRESS_FONT Font16
@@ -600,18 +600,17 @@ void drawPIOLogo(){
 /*parameters are in pcParam, values in pcValue*/
 void httpd_cgi_handler(struct fs_file *file, const char* uri, int iNumParams,char **pcParam, char **pcValue){
   /*checking if uri is /cgi, this is an empty file just for cgi handling*/
-  if(strncmp(uri, "/cgi",strlen("/cgi"))==0){
+  if(strncmp(uri,"/options.html",strlen("/options.html"))==0){
     for(int i=0;i<iNumParams;i++){
       if(strncmp(pcParam[i],"bgcolor",strlen("bgcolor"))==0){
-
         /*checking selected color*/
-        if(strncmp(pcValue[i]),"red",strlen("red")==0){
+        if(strncmp(pcValue[i],"red",strlen("red"))==0){
           background_color = LCD_COLOR_RED;
-        } else if(strncmp(pcValue[i]),"green",strlen("green")==0){
+        } else if(strncmp(pcValue[i],"green",strlen("green"))==0){
           background_color = LCD_COLOR_GREEN;
-        } else if(strncmp(pcValue[i]),"magenta",strlen("magenta")==0){
+        } else if(strncmp(pcValue[i],"magenta",strlen("magenta"))==0){
           background_color = LCD_COLOR_MAGENTA;
-        } else if(strncmp(pcValue[i]),"blue",strlen("blue")==0){
+        } else if(strncmp(pcValue[i],"blue",strlen("blue"))==0){
           background_color = LCD_COLOR_BLUE;
         }
 
@@ -625,6 +624,7 @@ void httpd_cgi_handler(struct fs_file *file, const char* uri, int iNumParams,cha
 }
 
 uint16_t mySsiHandler(const char* ssi_tag_name, char* pcInsert, int iInsertLen){
+  
   /*checking for DATE*/
   if(strncmp(ssi_tag_name,ssiTags[0],strlen(ssiTags[0]))==0){
     strncpy(pcInsert,__DATE__,iInsertLen);
@@ -684,6 +684,8 @@ int main(void)
   MX_SDMMC1_SD_Init();
   MX_FATFS_Init();
   /* USER CODE BEGIN 2 */
+  /*setting ssi handler*/
+  http_set_ssi_handler(mySsiHandler, ssiTags,AMOUNT_SSI_TAGS);
   
   httpd_init();
   
