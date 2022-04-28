@@ -20,5 +20,3 @@
 #include "stm32746g_discovery_sdram.h"
 #include "stm32746g_discovery_ts.h"
 #include "stm32746g_discovery_lcd.h"
-
-#include "platformio_logo.h"

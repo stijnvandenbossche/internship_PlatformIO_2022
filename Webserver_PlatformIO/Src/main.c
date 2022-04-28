@@ -17,6 +17,10 @@
   */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
+
+/* Private includes ----------------------------------------------------------*/
+/* USER CODE BEGIN Includes */
+
 #include "main.h"
 #include <errno.h>
 #include <sys/unistd.h>
@@ -25,6 +29,8 @@
 #include <string.h>
 #include <stdint.h>
 
+
+//Board-specific includes
 #ifdef BOARD_STM32
 #include "stm32_includes.h"
 #endif
@@ -32,19 +38,15 @@
 #include "esp32_includes.h"
 #endif
 
-
-
-/* Private includes ----------------------------------------------------------*/
-/* USER CODE BEGIN Includes */
-
-
-
+#include "platformio_logo.h"
 
 
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
+
+
 
 
 
@@ -57,104 +59,7 @@
 /*SSI values*/
 #define AMOUNT_SSI_TAGS 3
 
-
-
-
-
-/*default background color*/
-#define BACKGROUND_COLOR LCD_COLOR_WHITE
-/*Default values for Menu button*/
-#define MENU_BUTTON_LOCATION_X 10
-#define MENU_BUTTON_LOCATION_Y 10
-#define MENU_BUTTON_HEIGHT 35
-#define MENU_BUTTON_WIDTH 35
-#define MENU_BUTTON_AMOUNT_STRIPES 3
-#define MENU_BUTTON_STRIPE_WIDTH MENU_BUTTON_HEIGHT/(MENU_BUTTON_AMOUNT_STRIPES*2-1)
-#define MENU_BUTTON_COLOR LCD_COLOR_BLACK
-#define MENU_BUTTON_IS_ACTIVE 0
-/*by default is displayed*/
-#define MENU_BUTTON_ISDISPLAYED 1
-
-/*Default values for IP button*/
-#define IP_BUTTON_HEIGHT 35
-#define IP_BUTTON_WIDTH 35
-#define IP_BUTTON_LOCATION_X 480 - IP_BUTTON_WIDTH - 10
-#define IP_BUTTON_LOCATION_Y 10
-#define IP_BUTTON_COLOR LCD_COLOR_BLACK
-#define IP_BUTTON_FONT Font20
-#define IP_BUTTON_PADDING_Y 10
-#define IP_BUTTON_PADDING_X 4
-/*by default is displayed*/
-#define IP_BUTTON_ISDISPLAYED 1
-
-/*Default values for IP Address*/
-#define IP_ADDRESS_HEIGHT 35
-#define IP_ADDRESS_WIDTH 150
-#define IP_ADDRESS_LOCATION_X 140
-#define IP_ADDRESS_LOCATION_Y 10
-#define IP_ADDRESS_COLOR LCD_COLOR_BLACK
-#define IP_ADDRESS_FONT Font16
-#define IP_ADDRESS_TEXT "IP address: %d.%d.%d.%d"
-/*by default is not displayed*/
-#define IP_ADDRESS_ISDISPLAYED 0
-
-/*Default values for Menu*/
-#define MENU_LOCATION_X 1
-#define MENU_LOCATION_Y 1
-#define MENU_AMOUNT_ITEMS 5 /* Home - Options - windows vs linux - info build - chat*/
-
-#define MENU_ITEM_HEIGHT 30
-#define MENU_HEIGHT MENU_AMOUNT_ITEMS*MENU_ITEM_HEIGHT + MENU_BUTTON_LOCATION_Y + MENU_BUTTON_HEIGHT + 10
-
-#define MENU_COLOR LCD_COLOR_BLACK
-#define MENU_FONT Font12
-#define MENU_WIDTH 135
-/*by default isn't displayed*/
-#define MENU_ISDISPLAYED 0
-
-/*Default values for menu items*/
-#define MENU_ITEM_HOME 1
-#define MENU_ITEM_OPTIONS 2 
-#define MENU_ITEM_BUILDINFO 3 
-#define MENU_ITEM_DIFFERENCES 4 
-#define MENU_ITEM_CHAT 5
-
-/*Page values*/
-#define PAGE_HOME MENU_ITEM_HOME
-#define PAGE_OPTIONS MENU_ITEM_OPTIONS 
-#define PAGE_BUILDINFO MENU_ITEM_BUILDINFO
-#define PAGE_DIFFERENCES MENU_ITEM_DIFFERENCES
-#define PAGE_CHAT MENU_ITEM_CHAT
-
-/*Menu item values*/
-#define MENU_ITEMS_TOP_PADDING 20
-#define MENU_ITEM_LOCATION_X 10
-#define MENU_ITEM_LOCATION_Y(itemnumber) MENU_BUTTON_LOCATION_Y + MENU_BUTTON_HEIGHT + MENU_ITEMS_TOP_PADDING + (itemnumber-1)*MENU_ITEM_HEIGHT
-
-/*Values for platformio logo*/
-//#define PIO_LOGO_DATA PLATFORMIO_LOGO_DATA
-#define PIO_LOGO_LOCATION_X 160
-#define PIO_LOGO_LOCATION_Y 40
-#define PIO_LOGO_FORMAT PLATFORMIO_LOGO_DATA_FORMAT
-#define PIO_LOGO_COLOR LCD_COLOR_WHITE /*Not used*/
-#define PIO_LOGO_WIDTH PLATFORMIO_LOGO_DATA_X_PIXEL
-#define PIO_LOGO_HEIGHT PLATFORMIO_LOGO_DATA_Y_PIXEL
-#define PIO_LOGO_ISDISPLAYED 1
-
-/*Values for background colors*/
-#define AMOUNT_BACKGROUND_COLORS 20
-#define BACKGROUND_COLORS_PER_ROW 5
-#define BACKGROUND_COLOR_AMOUNT_ROWS AMOUNT_BACKGROUND_COLORS/BACKGROUND_COLORS_PER_ROW
-
-/*Values for background color options*/
-#define BG_OPTIONS_LOCATION_X 160
-#define BG_OPTIONS_LOCATION_Y 50
-#define BG_OPTIONS_COLOR LCD_COLOR_BLACK
-#define BG_OPTIONS_ELEMENT_WIDTH 35
-#define BG_OPTIONS_ELEMENT_HEIGHT 35
-#define BG_OPTIONS_HEIGHT BG_OPTIONS_ELEMENT_WIDTH*BACKGROUND_COLOR_AMOUNT_ROWS
-#define BG_OPTIONS_WIDTH BG_OPTIONS_ELEMENT_HEIGHT*BACKGROUND_COLORS_PER_ROW
-#define BG_OPTIONS_ISDISPLAYED 0
+#define PIO_LOGO_DATA  PLATFORMIO_LOGO_DATA
 
 /* USER CODE END PD */
 
@@ -166,6 +71,9 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
+
+//STM specific global variables*/
+#ifdef BOARD_STM32
 CRC_HandleTypeDef hcrc;
 DMA2D_HandleTypeDef hdma2d;
 I2C_HandleTypeDef hi2c3;
@@ -176,64 +84,35 @@ DMA_HandleTypeDef hdma_memtomem_dma2_stream0;
 SDRAM_HandleTypeDef hsdram1;
 
 UART_HandleTypeDef huart1;
+#endif
+
 int cnt = 0;
 
 /*SSI TAGS*/
 char* ssiTags[AMOUNT_SSI_TAGS]={"DATE","TIME","LWIPVERS"};
 
-
-
-/*LCD elements*/
-
-/*background color*/
-uint32_t background_color = BACKGROUND_COLOR;
-
-/*array with available background colors*/
-uint32_t bgcolors_array[AMOUNT_BACKGROUND_COLORS]={
-  LCD_COLOR_DARKRED     , LCD_COLOR_RED         , LCD_COLOR_LIGHTRED    , LCD_COLOR_ORANGE      , LCD_COLOR_DARKYELLOW  , 
-  LCD_COLOR_YELLOW      , LCD_COLOR_LIGHTYELLOW , LCD_COLOR_LIGHTGREEN  , LCD_COLOR_GREEN       , LCD_COLOR_DARKGREEN   , 
-  LCD_COLOR_DARKCYAN    , LCD_COLOR_CYAN        , LCD_COLOR_LIGHTBLUE   , LCD_COLOR_BLUE        , LCD_COLOR_DARKBLUE    , 
-  LCD_COLOR_DARKMAGENTA , LCD_COLOR_MAGENTA     , LCD_COLOR_LIGHTMAGENTA, LCD_COLOR_LIGHTGRAY   , LCD_COLOR_WHITE 
-};
-
-/*initialize menu_button*/
-MENU_BUTTON menu_button = {.base_element = {.locationX = MENU_BUTTON_LOCATION_X, .locationY = MENU_BUTTON_LOCATION_Y, .height=MENU_BUTTON_HEIGHT, .width = MENU_BUTTON_WIDTH, .color = MENU_BUTTON_COLOR, .isDisplayed = MENU_BUTTON_ISDISPLAYED}, .amountStripes = MENU_BUTTON_AMOUNT_STRIPES, .stripeWidth = MENU_BUTTON_STRIPE_WIDTH, .isActive = MENU_BUTTON_IS_ACTIVE };
-
-/*initialize IP_button*/
-IP_BUTTON ip_button = {.base_element = {.locationX = IP_BUTTON_LOCATION_X, .locationY = IP_BUTTON_LOCATION_Y, .height=IP_BUTTON_HEIGHT, .width = IP_BUTTON_WIDTH, .color = IP_BUTTON_COLOR, .isDisplayed = IP_BUTTON_ISDISPLAYED}, .paddingX = IP_BUTTON_PADDING_X, .paddingY = IP_BUTTON_PADDING_Y};
-
-/*initialize ip_address*/
-LCD_ELEMENT lcd_element_ip_address = {.locationX = IP_ADDRESS_LOCATION_X, .locationY = IP_ADDRESS_LOCATION_Y, .height=IP_ADDRESS_HEIGHT, .width = IP_ADDRESS_WIDTH, .color = IP_ADDRESS_COLOR, .isDisplayed = IP_ADDRESS_ISDISPLAYED};
-
-/*initialize menu*/
-MENU menu = {
-  .base_element = {.locationX = MENU_LOCATION_X, .locationY = MENU_LOCATION_Y, .height=MENU_HEIGHT, .width = MENU_WIDTH, .color = MENU_COLOR, .isDisplayed = MENU_ISDISPLAYED},
-  .amountElements = MENU_AMOUNT_ITEMS,
-  .elementHeight = MENU_ITEM_HEIGHT,
-  .elementHome = {.locationX = MENU_ITEM_LOCATION_X, .locationY = MENU_ITEM_LOCATION_Y(MENU_ITEM_HOME), .height=MENU_ITEM_HEIGHT, .width = MENU_WIDTH, .color = MENU_COLOR, .isDisplayed = MENU_ISDISPLAYED},
-  .elementOptions = {.locationX = MENU_ITEM_LOCATION_X, .locationY = MENU_ITEM_LOCATION_Y(MENU_ITEM_OPTIONS), .height=MENU_ITEM_HEIGHT, .width = MENU_WIDTH, .color = MENU_COLOR, .isDisplayed = MENU_ISDISPLAYED},
-  .elementBuildinfo = {.locationX = MENU_ITEM_LOCATION_X, .locationY = MENU_ITEM_LOCATION_Y(MENU_ITEM_BUILDINFO), .height=MENU_ITEM_HEIGHT, .width = MENU_WIDTH, .color = MENU_COLOR, .isDisplayed = MENU_ISDISPLAYED},
-  .elementDifferences = {.locationX = MENU_ITEM_LOCATION_X, .locationY = MENU_ITEM_LOCATION_Y(MENU_ITEM_DIFFERENCES), .height=MENU_ITEM_HEIGHT, .width = MENU_WIDTH, .color = MENU_COLOR, .isDisplayed = MENU_ISDISPLAYED},
-  .elementChat = {.locationX = MENU_ITEM_LOCATION_X, .locationY = MENU_ITEM_LOCATION_Y(MENU_ITEM_CHAT), .height=MENU_ITEM_HEIGHT, .width = MENU_WIDTH, .color = MENU_COLOR, .isDisplayed = MENU_ISDISPLAYED},
-  };
+/*declaring external global vars*/
+extern uint32_t background_color;
+extern uint32_t bgcolors_array[];
+extern MENU_BUTTON menu_button;
+extern IP_BUTTON ip_button;
+extern LCD_ELEMENT lcd_element_ip_address;
+extern MENU menu;
 
 /*initialize pio_logo*/
 
-PICTURE pio_logo = {{.locationX = PIO_LOGO_LOCATION_X, .locationY = PIO_LOGO_LOCATION_Y, .height= PIO_LOGO_HEIGHT, .width = PIO_LOGO_WIDTH, .color = PIO_LOGO_COLOR, .isDisplayed = PIO_LOGO_ISDISPLAYED},.format = PIO_LOGO_FORMAT, .data = PLATFORMIO_LOGO_DATA};
+PICTURE pio_logo = {{.locationX = PIO_LOGO_LOCATION_X, .locationY = PIO_LOGO_LOCATION_Y, .height= PIO_LOGO_HEIGHT, .width = PIO_LOGO_WIDTH, .color = PIO_LOGO_COLOR, .isDisplayed = PIO_LOGO_ISDISPLAYED},.format = PIO_LOGO_FORMAT,.data=PIO_LOGO_DATA};
 
-/*initialize bg_colors drawing*/
 
-BG_COLORS bg_colors = {
-                        {.locationX = BG_OPTIONS_LOCATION_X, .locationY = BG_OPTIONS_LOCATION_Y, .height= BG_OPTIONS_HEIGHT, .width = BG_OPTIONS_WIDTH, .color = BG_OPTIONS_COLOR, .isDisplayed = BG_OPTIONS_ISDISPLAYED}, 
-                        .amountRows = BACKGROUND_COLOR_AMOUNT_ROWS, .colorsPerRow = BACKGROUND_COLORS_PER_ROW, .elementHeight = BG_OPTIONS_ELEMENT_HEIGHT, .elementWidth = BG_OPTIONS_ELEMENT_WIDTH
-                      };
-
+extern BG_COLORS bg_colors;
 
 
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
+#ifdef BOARD_STM32
 void SystemClock_Config(void);
+#endif
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -304,7 +183,7 @@ void handleTouch(uint16_t x, uint16_t y){
         menu_button.isActive = 0;
       }
 
-      printf("DRAW MENU\r\n");
+      //printf("DRAW MENU\r\n");
     }
   }
 
@@ -317,7 +196,7 @@ void handleTouch(uint16_t x, uint16_t y){
       }else if(!lcd_element_ip_address.isDisplayed){
         lcd_element_ip_address.isDisplayed=1;
       }
-      printf("Display IP\r\n");
+      //printf("Display IP\r\n");
     }
   }
 
@@ -328,7 +207,7 @@ void handleTouch(uint16_t x, uint16_t y){
     if(menu.elementHome.isDisplayed){
       if(touchInBoundary(x,y,menu.elementHome)){
         goToPage(PAGE_HOME);
-        printf("Home pressed\r\n");
+        //printf("Home pressed\r\n");
       }
     }
 
@@ -336,7 +215,7 @@ void handleTouch(uint16_t x, uint16_t y){
     if(menu.elementOptions.isDisplayed){
       if(touchInBoundary(x,y,menu.elementOptions)){
         goToPage(PAGE_OPTIONS);
-        printf("Options pressed\r\n");
+        //printf("Options pressed\r\n");
       }
     }
 
@@ -344,7 +223,7 @@ void handleTouch(uint16_t x, uint16_t y){
     if(menu.elementBuildinfo.isDisplayed){
       if(touchInBoundary(x,y,menu.elementBuildinfo)){
         goToPage(PAGE_BUILDINFO);
-        printf("Build Info pressed\r\n");
+        //printf("Build Info pressed\r\n");
       }
     }
   
@@ -352,7 +231,7 @@ void handleTouch(uint16_t x, uint16_t y){
     if(menu.elementDifferences.isDisplayed){
       if(touchInBoundary(x,y,menu.elementDifferences)){
         goToPage(PAGE_DIFFERENCES);
-        printf("windows vs linux pressed\r\n");
+        //printf("windows vs linux pressed\r\n");
       }
     }  
 
@@ -360,7 +239,7 @@ void handleTouch(uint16_t x, uint16_t y){
     if(menu.elementChat.isDisplayed){
       if(touchInBoundary(x,y,menu.elementChat)){
         goToPage(PAGE_CHAT);
-        printf("Chat pressed\r\n");
+        //printf("Chat pressed\r\n");
       }
     }
   }
@@ -378,7 +257,7 @@ void handleTouch(uint16_t x, uint16_t y){
                                 bg_colors.elementHeight
                                 ))
         {
-          printf("Color pressed: #%d\r\n",i);
+          //printf("Color pressed: #%d\r\n",i);
           background_color = bgcolors_array[i];
           break;
         }
@@ -430,13 +309,7 @@ void goToPage(int page){
 
 /*Checking all elements if they need to be displayed*/
 void renderFrame(){
-  /*clear background*/
-  BSP_LCD_SelectLayer(0);
-  BSP_LCD_Clear(background_color);
-
-  /*clear foreground*/
-  BSP_LCD_SelectLayer(1);
-  BSP_LCD_Clear(background_color);
+  clearBGFG();
 
   /*Menu button*/
   if(menu_button.base_element.isDisplayed){
@@ -468,6 +341,16 @@ void renderFrame(){
   }
 
   return;
+}
+
+void clearBGFG(){
+  /*clear background*/
+  BSP_LCD_SelectLayer(0);
+  BSP_LCD_Clear(background_color);
+
+  /*clear foreground*/
+  BSP_LCD_SelectLayer(1);
+  BSP_LCD_Clear(background_color);
 }
 
 
@@ -578,7 +461,7 @@ void drawMenu(){
   return;
 }
 
-void drawPIOLogo(){
+void drawPIOLogo(void){
   /*Calling custom draw function that uses DMA2D*/
   drawBitmapImage(pio_logo.data,pio_logo.base_element.locationX,pio_logo.base_element.locationY,pio_logo.base_element.width,pio_logo.base_element.height,pio_logo.format);
   return;

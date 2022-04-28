@@ -35,6 +35,10 @@ extern "C" {
 #include "stm32f7xx_hal.h"
 #endif
 
+
+//Common includes
+#include "lcd_elements.h"
+
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
@@ -58,54 +62,11 @@ extern "C" {
 void Error_Handler(void);
 
 /* USER CODE BEGIN EFP */
-typedef struct LCD_ELEMENT{
-  /*Location is top left corner of element*/
-  int locationX;
-  int locationY;
-  int height;
-  int width;
-  uint32_t color;
-  int isDisplayed;
-} LCD_ELEMENT;
 
-typedef struct MENU_BUTTON{
-  LCD_ELEMENT base_element;  
-  int amountStripes;
-  int stripeWidth;
-  int isActive;
-} MENU_BUTTON;
 
-typedef struct IP_BUTTON{
-  LCD_ELEMENT base_element;
-  int paddingX;
-  int paddingY;
-} IP_BUTTON;
 
-typedef struct MENU{
-  LCD_ELEMENT base_element;
-  int amountElements;
-  int elementHeight;
-  LCD_ELEMENT elementHome;
-  LCD_ELEMENT elementOptions;
-  LCD_ELEMENT elementBuildinfo;
-  LCD_ELEMENT elementChat;
-  LCD_ELEMENT elementDifferences;
-} MENU;
 
-typedef struct PICTURE{
-  LCD_ELEMENT base_element;
-  uint32_t format;
-  unsigned short* data;
-} PICTURE;
-
-typedef struct BG_COLORS{
-  LCD_ELEMENT base_element;
-  int colorsPerRow;
-  int amountRows;
-  int elementWidth;
-  int elementHeight;
-}BG_COLORS;
-
+void clearBGFG(void);
 void handleTouch(uint16_t , uint16_t);
 void renderFrame(void);
 void clearElements(void);

@@ -12,7 +12,10 @@
 			"stm32746g_discovery_lcd.h": "c",
 			"rk043fn48h.h": "c",
 			"stm32746g_discovery_sdram.h": "c",
-			"stm32f7xx_hal.h": "c"
+			"stm32f7xx_hal.h": "c",
+			"main.h": "c",
+			"stm32_includes.h": "c",
+			"platformio_logo.h": "c"
 		}
 	}
 }
