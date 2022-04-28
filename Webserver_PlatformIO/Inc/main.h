@@ -27,10 +27,13 @@ extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32f7xx_hal.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include <stdint.h>
+#ifdef BOARD_STM32
+#include "stm32f7xx_hal.h"
+#endif
 
 /* USER CODE END Includes */
 
