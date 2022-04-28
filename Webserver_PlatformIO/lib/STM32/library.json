@@ -1,0 +1,11 @@
+{
+    "name": "STM_libraries",
+    "version": "1.0.0",
+    "description": "stm-specific libraries",
+    "keywords": "stm",
+    "frameworks": "stm32cube",
+    "platforms": "ststm32",
+    "build":{
+      "flags":"-I lib/STM32/include/"
+    }
+  }

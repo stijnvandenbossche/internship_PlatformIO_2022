@@ -1,0 +1,11 @@
+{
+    "name": "BSP_STM32f746G-DISCO",
+    "version": "1.0.0",
+    "description": "BSP package for LCD & TS support",
+    "keywords": "BSP",
+    "frameworks": "stm32cube",
+    "platforms": "ststm32",
+    "build":{
+      "flags":"-I lib/BSP/include/"
+    }
+  }
