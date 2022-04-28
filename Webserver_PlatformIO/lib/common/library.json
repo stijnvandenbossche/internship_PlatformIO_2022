@@ -1,0 +1,11 @@
+{
+    "name": "common_files",
+    "version": "1.0.0",
+    "description": "common files for both STM and ESP",
+    "keywords": "common",
+    "frameworks": "*",
+    "platforms": "*",
+    "build":{
+      "flags":"-I lib/common/include/"
+    }
+  }

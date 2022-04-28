@@ -18,6 +18,7 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include <string.h>
 #include "crc.h"
 #include "dma2d.h"
 #include "fatfs.h"
