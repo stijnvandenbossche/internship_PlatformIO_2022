@@ -18,31 +18,21 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#ifdef BOARD_STM32
+#include "stm32_includes.h"
+#endif
 #include <string.h>
-#include "crc.h"
-#include "dma2d.h"
-#include "fatfs.h"
-#include "i2c.h"
-#include "ltdc.h"
-#include "lwip.h"
-#include "sdmmc.h"
-#include "usart.h"
-#include "gpio.h"
-#include "fmc.h"
+
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 
-#include "init.h"
-#include "httpd.h"
+
 #include <errno.h>
 #include <sys/unistd.h>
 #include <sys/stat.h>
 #include <sys/times.h>
-#include "stm32746g_discovery.h"
-#include "stm32746g_discovery_sdram.h"
-#include "stm32746g_discovery_ts.h"
-#include "stm32746g_discovery_lcd.h"
+
 
 #include "platformio_logo.h"
 
