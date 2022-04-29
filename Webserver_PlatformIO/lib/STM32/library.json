@@ -1,0 +1,11 @@
+{
+    "name": "STM32_files",
+    "version": "1.0.0",
+    "description": "files for STM",
+    "keywords": "BSP",
+    "frameworks": "stm32cube",
+    "platforms": "ststm32",
+    "build":{
+      "flags":"-I lib/STM32/include/"
+    }
+  }

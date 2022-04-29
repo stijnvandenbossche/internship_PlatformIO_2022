@@ -1,0 +1,11 @@
+{
+    "name": "STM32_files_extra",
+    "version": "1.0.0",
+    "description": "extra files for STM",
+    "keywords": "STM",
+    "frameworks": "stm32cube",
+    "platforms": "ststm32",
+    "build":{
+      "flags":"-I lib/STM32_extrafiles/include/"
+    }
+  }

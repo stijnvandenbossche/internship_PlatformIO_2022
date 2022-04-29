@@ -1,3 +1,5 @@
+#ifdef BOARD_STM32
+
 /* USER CODE BEGIN Header */
 /**
   ******************************************************************************
@@ -201,3 +203,5 @@ void SysTick_Handler(void)
 /* USER CODE BEGIN 1 */
 
 /* USER CODE END 1 */
+
+#endif
