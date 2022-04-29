@@ -183,7 +183,7 @@ void handleTouch(uint16_t x, uint16_t y){
         menu_button.isActive = 0;
       }
 
-      //printf("DRAW MENU\r\n");
+      printf("DRAW MENU\r\n");
     }
   }
 
@@ -196,7 +196,7 @@ void handleTouch(uint16_t x, uint16_t y){
       }else if(!lcd_element_ip_address.isDisplayed){
         lcd_element_ip_address.isDisplayed=1;
       }
-      //printf("Display IP\r\n");
+      printf("Display IP\r\n");
     }
   }
 
@@ -207,7 +207,7 @@ void handleTouch(uint16_t x, uint16_t y){
     if(menu.elementHome.isDisplayed){
       if(touchInBoundary(x,y,menu.elementHome)){
         goToPage(PAGE_HOME);
-        //printf("Home pressed\r\n");
+        printf("Home pressed\r\n");
       }
     }
 
@@ -215,7 +215,7 @@ void handleTouch(uint16_t x, uint16_t y){
     if(menu.elementOptions.isDisplayed){
       if(touchInBoundary(x,y,menu.elementOptions)){
         goToPage(PAGE_OPTIONS);
-        //printf("Options pressed\r\n");
+        printf("Options pressed\r\n");
       }
     }
 
@@ -223,7 +223,7 @@ void handleTouch(uint16_t x, uint16_t y){
     if(menu.elementBuildinfo.isDisplayed){
       if(touchInBoundary(x,y,menu.elementBuildinfo)){
         goToPage(PAGE_BUILDINFO);
-        //printf("Build Info pressed\r\n");
+        printf("Build Info pressed\r\n");
       }
     }
   
@@ -231,7 +231,7 @@ void handleTouch(uint16_t x, uint16_t y){
     if(menu.elementDifferences.isDisplayed){
       if(touchInBoundary(x,y,menu.elementDifferences)){
         goToPage(PAGE_DIFFERENCES);
-        //printf("windows vs linux pressed\r\n");
+        printf("windows vs linux pressed\r\n");
       }
     }  
 
@@ -239,7 +239,7 @@ void handleTouch(uint16_t x, uint16_t y){
     if(menu.elementChat.isDisplayed){
       if(touchInBoundary(x,y,menu.elementChat)){
         goToPage(PAGE_CHAT);
-        //printf("Chat pressed\r\n");
+        printf("Chat pressed\r\n");
       }
     }
   }
@@ -257,7 +257,7 @@ void handleTouch(uint16_t x, uint16_t y){
                                 bg_colors.elementHeight
                                 ))
         {
-          //printf("Color pressed: #%d\r\n",i);
+          printf("Color pressed: #%d\r\n",i);
           background_color = bgcolors_array[i];
           break;
         }
@@ -309,7 +309,13 @@ void goToPage(int page){
 
 /*Checking all elements if they need to be displayed*/
 void renderFrame(){
-  clearBGFG();
+  /*clear background*/
+  BSP_LCD_SelectLayer(0);
+  BSP_LCD_Clear(background_color);
+
+  /*clear foreground*/
+  BSP_LCD_SelectLayer(1);
+  BSP_LCD_Clear(background_color);
 
   /*Menu button*/
   if(menu_button.base_element.isDisplayed){
@@ -341,16 +347,6 @@ void renderFrame(){
   }
 
   return;
-}
-
-void clearBGFG(){
-  /*clear background*/
-  BSP_LCD_SelectLayer(0);
-  BSP_LCD_Clear(background_color);
-
-  /*clear foreground*/
-  BSP_LCD_SelectLayer(1);
-  BSP_LCD_Clear(background_color);
 }
 
 
@@ -546,7 +542,7 @@ int main(void)
   SystemClock_Config();
 
   /* USER CODE BEGIN SysInit */
-
+  printf("start init\r\n");
   /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
@@ -561,11 +557,14 @@ int main(void)
   MX_SDMMC1_SD_Init();
   MX_FATFS_Init();
   /* USER CODE BEGIN 2 */
+  printf("end init\r\n");
+
   /*setting ssi handler*/
   http_set_ssi_handler(mySsiHandler, ssiTags,AMOUNT_SSI_TAGS);
   
   httpd_init();
   
+  printf("http init ok\r\n");
   /* Initialisation of LCD*/
   BSP_LCD_Init();
   BSP_LCD_LayerDefaultInit(1, LCD_FB_START_ADDRESS);
@@ -591,6 +590,7 @@ int main(void)
   
   renderFrame();
   
+  printf("Frame rendered\r\n");
   /* USER CODE END 2 */
 
   /* Infinite loop */

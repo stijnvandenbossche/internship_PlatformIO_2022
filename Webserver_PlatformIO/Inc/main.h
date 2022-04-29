@@ -64,9 +64,6 @@ void Error_Handler(void);
 /* USER CODE BEGIN EFP */
 
 
-
-
-void clearBGFG(void);
 void handleTouch(uint16_t , uint16_t);
 void renderFrame(void);
 void clearElements(void);
