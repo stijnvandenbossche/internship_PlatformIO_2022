@@ -28,6 +28,7 @@ extern "C" {
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f7xx_hal.h"
+#include "common_includes.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -54,54 +55,7 @@ extern "C" {
 /* Exported functions prototypes ---------------------------------------------*/
 void Error_Handler(void);
 
-/* USER CODE BEGIN EFP */
-typedef struct LCD_ELEMENT{
-  /*Location is top left corner of element*/
-  int locationX;
-  int locationY;
-  int height;
-  int width;
-  uint32_t color;
-  int isDisplayed;
-} LCD_ELEMENT;
 
-typedef struct MENU_BUTTON{
-  LCD_ELEMENT base_element;  
-  int amountStripes;
-  int stripeWidth;
-  int isActive;
-} MENU_BUTTON;
-
-typedef struct IP_BUTTON{
-  LCD_ELEMENT base_element;
-  int paddingX;
-  int paddingY;
-} IP_BUTTON;
-
-typedef struct MENU{
-  LCD_ELEMENT base_element;
-  int amountElements;
-  int elementHeight;
-  LCD_ELEMENT elementHome;
-  LCD_ELEMENT elementOptions;
-  LCD_ELEMENT elementBuildinfo;
-  LCD_ELEMENT elementChat;
-  LCD_ELEMENT elementDifferences;
-} MENU;
-
-typedef struct PICTURE{
-  LCD_ELEMENT base_element;
-  uint32_t format;
-  unsigned short* data;
-} PICTURE;
-
-typedef struct BG_COLORS{
-  LCD_ELEMENT base_element;
-  int colorsPerRow;
-  int amountRows;
-  int elementWidth;
-  int elementHeight;
-}BG_COLORS;
 
 void handleTouch(uint16_t , uint16_t);
 void renderFrame(void);
