@@ -161,7 +161,12 @@ typedef struct BG_COLORS{
 }BG_COLORS;
 
 
-
+void handleTouch(uint16_t , uint16_t);
+void renderFrame(void);
+void clearElements(void);
+void goToPage(int page);
+int touchInBoundary(uint16_t, uint16_t, LCD_ELEMENT);
+int touchInBoundaryCoords(uint16_t, uint16_t, int, int, int, int);
 
 
 #endif

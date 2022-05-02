@@ -57,18 +57,7 @@ void Error_Handler(void);
 
 
 
-void handleTouch(uint16_t , uint16_t);
-void renderFrame(void);
-void clearElements(void);
-void drawMenuButton(void);
-void drawBgColorOptions(void);
-void drawIPButton(void);
-void drawIPAddress(void);
-void drawMenu(void);
-void drawPIOLogo(void);
-void goToPage(int page);
-int touchInBoundary(uint16_t, uint16_t, LCD_ELEMENT);
-int touchInBoundaryCoords(uint16_t, uint16_t, int, int, int, int);
+
 
 /* USER CODE END EFP */
 

@@ -12,7 +12,8 @@
 			"stm32746g_discovery_lcd.h": "c",
 			"rk043fn48h.h": "c",
 			"fmc.h": "c",
-			"platformio_logo.h": "c"
+			"platformio_logo.h": "c",
+			"stm32_lcd_functions.h": "c"
 		}
 	}
 }
