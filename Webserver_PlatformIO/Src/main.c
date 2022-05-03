@@ -228,9 +228,11 @@ int main(void)
   BSP_TS_Init(480,272);
   #endif
 
-  
-  //renderFrame();
-  
+  //small guard to be removed
+  #ifdef BOARD_STM32
+  renderFrame();
+  #endif
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
