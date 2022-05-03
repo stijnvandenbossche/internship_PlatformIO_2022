@@ -18,3 +18,6 @@
 #include "stm32746g_discovery_sdram.h"
 #include "stm32746g_discovery_ts.h"
 #include "stm32746g_discovery_lcd.h"
+
+#include "stm32_hw_functions.h"
+#include "stm32_lcd_functions.h"

@@ -83,7 +83,6 @@ SDRAM_HandleTypeDef hsdram1;
 UART_HandleTypeDef huart1;
 #endif
 
-int cnt = 0;
 
 /*SSI TAGS*/
 char* ssiTags[AMOUNT_SSI_TAGS]={"DATE","TIME","LWIPVERS"};
@@ -104,7 +103,9 @@ extern BG_COLORS bg_colors;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
+#ifdef BOARD_STM32
 void SystemClock_Config(void);
+#endif
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -202,63 +203,25 @@ int main(void)
 {
   /* USER CODE BEGIN 1 */
 
+
+  
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
 
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
-  HAL_Init();
-
-  /* USER CODE BEGIN Init */
-
-  /* USER CODE END Init */
-
-  /* Configure the system clock */
-  SystemClock_Config();
-
-  /* USER CODE BEGIN SysInit */
-
-  /* USER CODE END SysInit */
-
-  /* Initialize all configured peripherals */
-  MX_GPIO_Init();
-  MX_LTDC_Init();
-  MX_USART1_UART_Init();
-  MX_LWIP_Init();
-  MX_CRC_Init();
-  MX_DMA2D_Init();
-  MX_FMC_Init();
-  MX_I2C3_Init();
-  MX_SDMMC1_SD_Init();
-  MX_FATFS_Init();
+  
   /* USER CODE BEGIN 2 */
-  /*setting ssi handler*/
+
+  #ifdef BOARD_STM32
   http_set_ssi_handler(mySsiHandler, ssiTags,AMOUNT_SSI_TAGS);
-  
-  httpd_init();
-  
-  /* Initialisation of LCD*/
-  BSP_LCD_Init();
-  BSP_LCD_LayerDefaultInit(1, LCD_FB_START_ADDRESS);
-  BSP_LCD_LayerDefaultInit(0, LCD_FB_START_ADDRESS + (BSP_LCD_GetXSize()*BSP_LCD_GetYSize()*4));
-  
-  BSP_LCD_DisplayOn();
-
-  /*Clear background and set background to white*/
-  BSP_LCD_SelectLayer(0);
-  BSP_LCD_Clear(LCD_COLOR_WHITE);
-
-  /*Clear foreground*/
-  BSP_LCD_SelectLayer(1);
-  BSP_LCD_Clear(LCD_COLOR_WHITE);
+  init_stm32();
 
   /*Touch Initialisations*/
   TS_StateTypeDef touchstate;
   BSP_TS_Init(480,272);
+  #endif
 
-
-
-  printf("Initialised\r\n");
   
   renderFrame();
   
@@ -271,9 +234,8 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-
-    MX_LWIP_Process();   
-    
+    #ifdef BOARD_STM32
+    MX_LWIP_Process();       
 
     /*Polling touchscreen*/
     BSP_TS_GetState(&touchstate);
@@ -282,10 +244,31 @@ int main(void)
       handleTouch( *(touchstate.touchX) , *(touchstate.touchY) );
       HAL_Delay(100);
     }
+    #endif
+
+
+
+
+
+
+
+
+
+
   }
   /* USER CODE END 3 */
 }
 
+
+
+
+
+
+
+
+
+//extra functions for stm
+#ifdef BOARD_STM32
 /**
   * @brief System Clock Configuration
   * @retval None
@@ -353,6 +336,8 @@ void Error_Handler(void)
   }
   /* USER CODE END Error_Handler_Debug */
 }
+
+#endif
 
 #ifdef  USE_FULL_ASSERT
 /**
