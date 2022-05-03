@@ -13,7 +13,8 @@
 			"rk043fn48h.h": "c",
 			"fmc.h": "c",
 			"platformio_logo.h": "c",
-			"stm32_lcd_functions.h": "c"
+			"stm32_lcd_functions.h": "c",
+			"esp32_includes.h": "c"
 		}
 	}
 }

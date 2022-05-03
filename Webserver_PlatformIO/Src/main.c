@@ -21,6 +21,7 @@
 #ifdef BOARD_STM32
 #include "stm32_includes.h"
 #endif
+
 #ifdef BOARD_ESP32
 #include "esp32_includes.h"
 #endif
@@ -28,7 +29,7 @@
 #include <string.h>
 
 
-#include "common_includes.h"
+//#include "common_includes.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -38,6 +39,8 @@
 #include <sys/unistd.h>
 #include <sys/stat.h>
 #include <sys/times.h>
+#include <stdint.h>
+#include <stddef.h>
 
 #ifdef BOARD_STM32
 #include "platformio_logo.h"
@@ -85,6 +88,7 @@ UART_HandleTypeDef huart1;
 
 
 /*SSI TAGS*/
+#ifdef BOARD_STM32
 char* ssiTags[AMOUNT_SSI_TAGS]={"DATE","TIME","LWIPVERS"};
 
 extern unsigned short PLATFORMIO_LOGO_DATA[];
@@ -97,7 +101,7 @@ extern LCD_ELEMENT lcd_element_ip_address;
 extern MENU menu;
 extern PICTURE pio_logo;
 extern BG_COLORS bg_colors;
-
+#endif
 
 
 /* USER CODE END PV */
@@ -147,6 +151,8 @@ int _write(int file, char *ptr, int len) {
 /*Handlers for CGI & SSI*/
 
 /*parameters are in pcParam, values in pcValue*/
+
+#ifdef BOARD_STM32
 void httpd_cgi_handler(struct fs_file *file, const char* uri, int iNumParams,char **pcParam, char **pcValue){
   /*checking if uri is /cgi, this is an empty file just for cgi handling*/
   if(strncmp(uri,"/options.html",strlen("/options.html"))==0){
@@ -190,7 +196,7 @@ uint16_t mySsiHandler(const char* ssi_tag_name, char* pcInsert, int iInsertLen){
     return strlen(LWIP_VERSION_STRING);
   }
 }
-
+#endif
 
 
 /* USER CODE END 0 */
@@ -223,7 +229,7 @@ int main(void)
   #endif
 
   
-  renderFrame();
+  //renderFrame();
   
   /* USER CODE END 2 */
 
@@ -258,6 +264,12 @@ int main(void)
   }
   /* USER CODE END 3 */
 }
+
+#ifdef BOARD_ESP32
+void app_main(){
+  main();
+}
+#endif
 
 
 

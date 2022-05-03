@@ -1,9 +1,16 @@
 #include "lcd_elements.h"
+#ifdef BOARD_STM32
 #include "platformio_logo.h"
+#endif
 
 #ifdef BOARD_STM32
 #include "stm32_lcd_functions.h"
 #endif
+#ifdef BOARD_ESP32
+#include "esp32_lcd_functions.h"
+#endif
+
+#include <stdio.h>
 
 /*LCD elements*/
 
@@ -43,7 +50,12 @@ MENU menu = {
 
 /*initialize pio_logo*/
 
+#ifdef BOARD_STM32
 PICTURE pio_logo = {{.locationX = PIO_LOGO_LOCATION_X, .locationY = PIO_LOGO_LOCATION_Y, .height= PIO_LOGO_HEIGHT, .width = PIO_LOGO_WIDTH, .color = PIO_LOGO_COLOR, .isDisplayed = PIO_LOGO_ISDISPLAYED},.format = PIO_LOGO_FORMAT, .data = PLATFORMIO_LOGO_DATA};
+#endif
+#ifdef BOARD_ESP32
+PICTURE pio_logo;
+#endif
 
 /*initialize bg_colors drawing*/
 

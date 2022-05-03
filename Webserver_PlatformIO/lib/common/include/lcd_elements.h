@@ -10,7 +10,7 @@
 #include "platformio_logo.h"
 #endif
 
-
+#include <stdint.h>
 
 
 /*default background color*/
@@ -85,6 +85,8 @@
 
 /*Values for platformio logo*/
 //#define PIO_LOGO_DATA PLATFORMIO_LOGO_DATA
+
+#ifdef BOARD_STM32
 #define PIO_LOGO_LOCATION_X 160
 #define PIO_LOGO_LOCATION_Y 40
 #define PIO_LOGO_FORMAT PLATFORMIO_LOGO_DATA_FORMAT
@@ -93,6 +95,7 @@
 #define PIO_LOGO_HEIGHT PLATFORMIO_LOGO_DATA_Y_PIXEL
 #define PIO_LOGO_DATA PLATFORMIO_LOGO_DATA
 #define PIO_LOGO_ISDISPLAYED 1
+#endif
 
 /*Values for background colors*/
 #define AMOUNT_BACKGROUND_COLORS 20

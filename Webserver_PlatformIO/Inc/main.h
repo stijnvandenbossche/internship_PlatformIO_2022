@@ -27,7 +27,9 @@ extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
+#ifdef BOARD_STM32
 #include "stm32f7xx_hal.h"
+#endif
 #include "common_includes.h"
 
 /* Private includes ----------------------------------------------------------*/
