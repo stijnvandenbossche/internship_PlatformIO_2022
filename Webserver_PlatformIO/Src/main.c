@@ -18,6 +18,14 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include <errno.h>
+#include <sys/unistd.h>
+#include <sys/stat.h>
+#include <sys/times.h>
+#include <stdint.h>
+#include <stddef.h>
+#include <string.h>
+
 #ifdef BOARD_STM32
 #include "stm32_includes.h"
 #endif
@@ -26,7 +34,7 @@
 #include "esp32_includes.h"
 #endif
 
-#include <string.h>
+
 
 
 //#include "common_includes.h"
@@ -35,12 +43,7 @@
 /* USER CODE BEGIN Includes */
 
 
-#include <errno.h>
-#include <sys/unistd.h>
-#include <sys/stat.h>
-#include <sys/times.h>
-#include <stdint.h>
-#include <stddef.h>
+
 
 #ifdef BOARD_STM32
 #include "platformio_logo.h"
@@ -103,6 +106,12 @@ extern PICTURE pio_logo;
 extern BG_COLORS bg_colors;
 #endif
 
+#ifdef BOARD_ESP32
+uint16_t* data_buf;
+uint16_t background_color_esp;
+sFONT defaultFont;
+#endif
+
 
 /* USER CODE END PV */
 
@@ -143,6 +152,9 @@ int _write(int file, char *ptr, int len) {
     }
     return len;
 }
+#endif
+#ifdef BOARD_ESP32
+static const char *TAG = "main";
 #endif
 
 
@@ -227,11 +239,48 @@ int main(void)
   TS_StateTypeDef touchstate;
   BSP_TS_Init(480,272);
   #endif
+  //vTaskDelay(500);
 
-  //small guard to be removed
-  #ifdef BOARD_STM32
-  renderFrame();
+  #ifdef BOARD_ESP32
+  lcd_config_t lcd_config = {
+  #ifdef CONFIG_LCD_ST7789
+        .clk_fre         = 80 * 1000 * 1000, /*!< ILI9341 Stable frequency configuration */
   #endif
+  #ifdef CONFIG_LCD_ILI9341
+        .clk_fre         = 40 * 1000 * 1000, /*!< ILI9341 Stable frequency configuration */
+  #endif
+        .pin_clk         = LCD_CLK,
+        .pin_mosi        = LCD_MOSI,
+        .pin_dc          = LCD_DC,
+        .pin_cs          = LCD_CS,
+        .pin_rst         = LCD_RST,
+        .pin_bk          = LCD_BK,
+        .max_buffer_size = 2 * 1024,
+        .horizontal      = 2, /*!< 2: UP, 3: DOWN */
+        .swap_data       = 1,
+    };
+
+    lcd_init(&lcd_config);
+    init_ESP_LCD_Buffer();
+    /*data_buf = (uint16_t *)heap_caps_calloc(SCREEN_XSIZE * SCREEN_YSIZE, sizeof(uint16_t), MALLOC_CAP_8BIT);
+    
+    if(data_buf != NULL){
+        ESP_LOGI(TAG,"LCD calloc ok");
+    }else{
+        ESP_LOGI(TAG,"LCD calloc not ok");   
+    }*/
+
+    //ESP_LOGI(TAG,"databuf: %d",(int)data_buf); 
+    background_color_esp = LCD_COLOR_YELLOW;
+    defaultFont = Font16;
+  #endif
+
+  fillBackground();
+
+
+
+  renderFrame();
+  
 
   /* USER CODE END 2 */
 
@@ -254,15 +303,33 @@ int main(void)
     }
     #endif
 
+    #ifdef BOARD_ESP32
+    vTaskDelay(100);
+    ESP_LOGI(TAG,"trying to render something:");
+    
+    /*
+    ESP_LOGI(TAG,"buffer contents: %d",data_buf[1010]);
+    for(int x=0;x<SCREEN_XSIZE;x++){
+        for(int y=0;y<SCREEN_YSIZE;y++){
+            data_buf[y*SCREEN_XSIZE+x] = background_color_esp;
+        }
+    }
+    ESP_LOGI(TAG,"buffer contents after bg: %d",data_buf[1010]);
 
 
 
+    for(int i=0;i<70;i++){
+      data_buf[1000+i]=LCD_COLOR_BLUE;
+    }
 
+    ESP_LOGI(TAG,"buffer contents 1: %d",data_buf[990]);
+    ESP_LOGI(TAG,"buffer contents 2: %d",data_buf[1010]);
+    */
 
+    lcd_set_index(0, 0, SCREEN_XSIZE - 1, SCREEN_YSIZE - 1);
+    lcd_write_data((uint8_t *)data_buf, SCREEN_XSIZE * SCREEN_YSIZE * sizeof(uint16_t));
 
-
-
-
+    #endif
   }
   /* USER CODE END 3 */
 }

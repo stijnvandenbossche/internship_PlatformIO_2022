@@ -139,3 +139,41 @@ void clearBGFG(){
   BSP_LCD_SelectLayer(1);
   BSP_LCD_Clear(background_color);
 }
+
+/*Checking all elements if they need to be displayed*/
+void renderFrame(){
+  clearBGFG();
+
+  /*Menu button*/
+  if(menu_button.base_element.isDisplayed){
+    drawMenuButton();
+  }
+
+  /*IP button*/
+  if(ip_button.base_element.isDisplayed){
+    drawIPButton();
+  }
+
+  /*IP Address*/
+  if(lcd_element_ip_address.isDisplayed){
+    drawIPAddress();
+  }
+
+  if(menu.base_element.isDisplayed){
+    drawMenu();
+  }
+
+  /*pio logo*/
+  if(pio_logo.base_element.isDisplayed){
+    drawPIOLogo();
+  }
+
+  /*BG color block options*/
+  if(bg_colors.base_element.isDisplayed){
+    drawBgColorOptions();
+  }
+
+  
+
+  return;
+}

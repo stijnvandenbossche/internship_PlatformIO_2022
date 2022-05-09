@@ -2,6 +2,9 @@
 #ifdef BOARD_STM32
 #include "platformio_logo.h"
 #endif
+#ifdef BOARD_ESP32
+#include "platformio_logo_esp.h"
+#endif
 
 #ifdef BOARD_STM32
 #include "stm32_lcd_functions.h"
@@ -54,7 +57,7 @@ MENU menu = {
 PICTURE pio_logo = {{.locationX = PIO_LOGO_LOCATION_X, .locationY = PIO_LOGO_LOCATION_Y, .height= PIO_LOGO_HEIGHT, .width = PIO_LOGO_WIDTH, .color = PIO_LOGO_COLOR, .isDisplayed = PIO_LOGO_ISDISPLAYED},.format = PIO_LOGO_FORMAT, .data = PLATFORMIO_LOGO_DATA};
 #endif
 #ifdef BOARD_ESP32
-PICTURE pio_logo;
+PICTURE pio_logo = {{.isDisplayed = PIO_LOGO_ISDISPLAYED}};
 #endif
 
 /*initialize bg_colors drawing*/
@@ -228,41 +231,7 @@ void goToPage(int page){
   }
 }
 
-/*Checking all elements if they need to be displayed*/
-void renderFrame(){
-  clearBGFG();
 
-  /*Menu button*/
-  if(menu_button.base_element.isDisplayed){
-    drawMenuButton();
-  }
-
-  /*IP button*/
-  if(ip_button.base_element.isDisplayed){
-    drawIPButton();
-  }
-
-  /*IP Address*/
-  if(lcd_element_ip_address.isDisplayed){
-    drawIPAddress();
-  }
-
-  if(menu.base_element.isDisplayed){
-    drawMenu();
-  }
-
-  /*pio logo*/
-  if(pio_logo.base_element.isDisplayed){
-    drawPIOLogo();
-  }
-
-  /*BG color block options*/
-  if(bg_colors.base_element.isDisplayed){
-    drawBgColorOptions();
-  }
-
-  return;
-}
 
 
                  

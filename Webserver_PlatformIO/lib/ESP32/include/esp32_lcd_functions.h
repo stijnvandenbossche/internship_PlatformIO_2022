@@ -1,10 +1,22 @@
 #ifndef ESP32_LCD_FUNCTIONS_H_
 #define ESP32_LCD_FUNCTIONS_H_
 
+#include <stdint.h>
+#include <stddef.h>
+#include "fonts.h"
+#include "esp_heap_caps.h"
+#include "lcd_elements.h"
+#include "platformio_logo_esp.h"
+#include "esp_log.h"
+#include "lcd.h"
+#include "esp_config.h"
+
 /*defines for colors*/
 #define IMAGE_MAX_SIZE (100 * 1024)/**< The maximum size of a single picture in the boot animation */
-#define IMAGE_WIDTH    320 /*!< width of jpeg file */
-#define IMAGE_HIGHT    240 /*!< height of jpeg file */
+
+//#define IMAGE_WIDTH    320 /*!< width of jpeg file */
+//#define IMAGE_HIGHT    240 /*!< height of jpeg file */
+
 
 //colors
 #define LCD_COLOR_BLUE ((uint16_t) 0b0000000000011111)
@@ -39,6 +51,9 @@
 #define LEFT_MODE 2
 #define RIGHT_MODE 3
 
+extern uint16_t* data_buf;
+extern uint16_t background_color_esp;
+extern sFONT defaultFont;
 
 
 void drawMenuButton(void);
@@ -49,5 +64,20 @@ void drawMenu(void);
 void drawPIOLogo(void);
 void clearBGFG(void);
 
+
+
+void init_ESP_LCD_Buffer(void);
+void fillBackground(void);
+void drawHLine(int posx_start, int posy, int posx_end, uint16_t color);
+void drawVLine(int posx, int posy_start,int posy_end, uint16_t color);
+void drawRect(int xstart,  int ystart, int width, int height, uint16_t color);
+void fillRect(int xstart, int ystart, int width, int height, uint16_t color);
+
+void drawChar(uint16_t Xpos, uint16_t Ypos, const uint8_t *c, uint16_t color);
+void displayChar(uint16_t Xpos, uint16_t Ypos, uint8_t Ascii,uint16_t color);
+void displayStringAt(uint16_t Xpos, uint16_t Ypos, uint8_t *Text, uint16_t color, int textAlignMode);
+void drawBitmap(uint16_t* picturedata,uint16_t startx, uint16_t starty, int picX, int picY);
+
+void renderFrame(void);
 
 #endif

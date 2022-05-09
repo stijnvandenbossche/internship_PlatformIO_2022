@@ -9,6 +9,8 @@ void drawMenu(void);
 void drawPIOLogo(void);
 void clearBGFG(void);
 
+void renderFrame(void);
+
 
 
 #endif
