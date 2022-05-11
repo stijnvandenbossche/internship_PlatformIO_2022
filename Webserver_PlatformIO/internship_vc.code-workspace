@@ -20,7 +20,9 @@
 			"platformio_logo_esp.h": "c",
 			"sdkconfig.h": "c",
 			"main.h": "c",
-			"lcd_elements.h": "c"
+			"lcd_elements.h": "c",
+			"stm32_includes.h": "c",
+			"stm32f7xx_hal.h": "c"
 		}
 	}
 }

@@ -123,7 +123,6 @@ void clearBGFG(){
 
 
 
-
 void init_ESP_LCD_Buffer(){
     data_buf = (uint16_t *)heap_caps_calloc(SCREEN_XSIZE * SCREEN_YSIZE, sizeof(uint16_t), MALLOC_CAP_8BIT);
     

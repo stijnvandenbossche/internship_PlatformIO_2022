@@ -207,8 +207,208 @@ uint16_t mySsiHandler(const char* ssi_tag_name, char* pcInsert, int iInsertLen){
     strncpy(pcInsert,LWIP_VERSION_STRING,iInsertLen);
     return strlen(LWIP_VERSION_STRING);
   }
+  return 0;
 }
 #endif
+
+
+
+
+//code for touch
+#ifdef BOARD_ESP32
+
+#define TOUCH_BUTTON_NUM 6
+#define PAD_DEINIT 404
+
+
+static QueueHandle_t que_touch = NULL;
+typedef struct touch_msg {
+    touch_pad_intr_mask_t intr_mask;
+    uint32_t pad_num;
+    uint32_t pad_status;
+    uint32_t pad_val;
+} touch_event_t;
+
+static const touch_pad_t button[TOUCH_BUTTON_NUM] = {
+    TOUCH_BUTTON_PHOTO,      /*!< 'PHOTO' button */
+    TOUCH_BUTTON_PLAY,       /*!< 'PLAY/PAUSE' button */
+    TOUCH_BUTTON_NETWORK,    /*!< 'NETWORK' button */
+    TOUCH_BUTTON_RECORD,     /*!< 'RECORD' button */
+    TOUCH_BUTTON_VOLUP,      /*!< 'VOL_UP' button */
+    TOUCH_BUTTON_VOLDOWN,    /*!< 'VOL_DOWN' button */
+    TOUCH_BUTTON_GUARD,      /*!< Guard ring for waterproof design. */
+    /*!< If this pad be touched, other pads no response. */
+};
+
+/*!<
+ * Touch threshold. The threshold determines the sensitivity of the touch.
+ * This threshold is derived by testing changes in readings from different touch channels.
+ * If (raw_data - baseline) > baseline * threshold, the pad be activated.
+ * If (raw_data - baseline) < baseline * threshold, the pad be inactivated.
+ */
+static const float button_threshold[TOUCH_BUTTON_NUM] = {
+    0.01,     /*!< threshold = 1% */
+    0.01,
+    0.01,
+    0.01,
+    0.01,
+    0.01,
+    0.01,
+};
+
+static void tp_example_set_thresholds(void)
+{
+    uint32_t touch_value;
+    for (int i = 0; i < TOUCH_BUTTON_NUM; i++) {
+        /*!< read benchmark value */
+        touch_pad_read_benchmark(button[i], &touch_value);
+        /*!< set interrupt threshold. */
+        touch_pad_set_thresh(button[i], touch_value * button_threshold[i]);
+        ESP_LOGI(TAG, "touch pad [%d] base %d, thresh %d", \
+                 button[i], touch_value, (uint32_t)(touch_value * button_threshold[i]));
+    }
+}
+
+esp_err_t example_touch_init(void)
+{
+
+    if (que_touch == NULL) {
+        que_touch = xQueueCreate(TOUCH_BUTTON_NUM, sizeof(touch_event_t));
+    }
+
+    /*!< Initialize touch pad peripheral, it will start a timer to run a filter */
+    ESP_LOGI(TAG, "Initializing touch pad");
+    /*!< Initialize touch pad peripheral. */
+    touch_pad_init();
+
+    for (int i = 0; i < TOUCH_BUTTON_NUM; i++) {
+        touch_pad_config(button[i]);
+    }
+
+#if TOUCH_CHANGE_CONFIG
+    /*!< If you want change the touch sensor default setting, please write here(after initialize). There are examples: */
+    touch_pad_set_meas_time(TOUCH_PAD_SLEEP_CYCLE_DEFAULT, TOUCH_PAD_SLEEP_CYCLE_DEFAULT);
+    touch_pad_set_voltage(TOUCH_PAD_HIGH_VOLTAGE_THRESHOLD, TOUCH_PAD_LOW_VOLTAGE_THRESHOLD, TOUCH_PAD_ATTEN_VOLTAGE_THRESHOLD);
+    touch_pad_set_idle_channel_connect(TOUCH_PAD_IDLE_CH_CONNECT_DEFAULT);
+    for (int i = 0; i < TOUCH_BUTTON_NUM; i++) {
+        touch_pad_set_cnt_mode(i, TOUCH_PAD_SLOPE_DEFAULT, TOUCH_PAD_TIE_OPT_DEFAULT);
+    }
+#endif
+
+#if TOUCH_BUTTON_DENOISE_ENABLE
+    /*!< Denoise setting at TouchSensor 0. */
+    touch_pad_denoise_t denoise = {
+        /*!< The bits to be cancelled are determined according to the noise level. */
+        .grade     = TOUCH_PAD_DENOISE_BIT4,
+        .cap_level = TOUCH_PAD_DENOISE_CAP_L4,
+    };
+    touch_pad_denoise_set_config(&denoise);
+    touch_pad_denoise_enable();
+    ESP_LOGI(TAG, "Denoise function init");
+#endif
+
+#if TOUCH_BUTTON_WATERPROOF_ENABLE
+    /*!< Waterproof function */
+    touch_pad_waterproof_t waterproof = {
+        .guard_ring_pad = TOUCH_BUTTON_GUARD,       /*!< If no ring pad, set 0; */
+        /*!< It depends on the number of the parasitic capacitance of the shield pad. */
+        .shield_driver  = TOUCH_PAD_SHIELD_DRV_L2,  /*!< 40pf */
+    };
+    touch_pad_waterproof_set_config(&waterproof);
+    touch_pad_waterproof_enable();
+    ESP_LOGI(TAG, "touch pad waterproof init");
+#endif
+
+    /*!< Filter setting */
+    //touchsensor_filter_set(TOUCH_PAD_FILTER_IIR_16);
+    //touch_pad_timeout_set(true, SOC_TOUCH_PAD_THRESHOLD_MAX);
+    /*!< Register touch interrupt ISR, enable intr type. */
+    //touch_pad_isr_register(touchsensor_interrupt_cb, NULL, TOUCH_PAD_INTR_MASK_ALL);
+    //touch_pad_intr_enable(TOUCH_PAD_INTR_MASK_ACTIVE | TOUCH_PAD_INTR_MASK_INACTIVE | TOUCH_PAD_INTR_MASK_TIMEOUT);
+
+    /*!< Enable touch sensor clock. Work mode is "timer trigger". */
+    touch_pad_set_fsm_mode(TOUCH_FSM_MODE_TIMER);
+    touch_pad_fsm_start();
+
+    return ESP_OK;
+}
+
+
+
+void touch_pad_read_task(void *pvParameter)
+{
+    touch_event_t evt = {0};
+
+    /*!< Wait touch sensor init done */
+    vTaskDelay(100 / portTICK_RATE_MS);
+    tp_example_set_thresholds();
+
+    while (1) {
+        int ret = xQueueReceive(que_touch, &evt, (portTickType)portMAX_DELAY);
+        if (evt.pad_num == PAD_DEINIT)
+        {
+            break;
+        }
+
+        if (ret != pdTRUE || (evt.intr_mask & TOUCH_PAD_INTR_MASK_ACTIVE) == false) {
+            continue;
+        }
+
+        /*!< if guard pad be touched, other pads no response. */
+        switch (evt.pad_num) {
+            case TOUCH_BUTTON_PHOTO:
+                ESP_LOGI(TAG, "photo    -> set the red light");
+                break;
+
+            case TOUCH_BUTTON_PLAY:
+                ESP_LOGI(TAG, "play     -> set the green light");
+                break;
+
+            case TOUCH_BUTTON_NETWORK:
+                ESP_LOGI(TAG, "network  -> set the blue light");
+                break;
+
+            case TOUCH_BUTTON_RECORD:
+                ESP_LOGI(TAG, "record   -> shut down the light");
+                break;
+
+            case TOUCH_BUTTON_VOLUP:
+                
+                    
+
+                ESP_LOGI(TAG, "vol_up   -> make the light brighter:");
+                    
+                
+
+                break;
+
+            case TOUCH_BUTTON_VOLDOWN:
+                
+
+                ESP_LOGI(TAG, "vol_down -> make the light darker:");
+                    
+
+                break;
+
+            default:
+                ESP_LOGI(TAG, "ERROR\n");
+                break;
+        }
+
+
+    }
+    ESP_LOGI(TAG, "touch_pad_read_task:exit the task\n");
+    //example_touch_deinit();
+    vTaskDelete(NULL);
+}
+
+
+
+#endif
+
+
+
+
 
 
 /* USER CODE END 0 */
@@ -254,7 +454,7 @@ int main(void)
         .pin_dc          = LCD_DC,
         .pin_cs          = LCD_CS,
         .pin_rst         = LCD_RST,
-        .pin_bk          = LCD_BK,
+        .pin_bk          = -1, //changed to be able to use audio board for buttons
         .max_buffer_size = 2 * 1024,
         .horizontal      = 2, /*!< 2: UP, 3: DOWN */
         .swap_data       = 1,
@@ -271,17 +471,27 @@ int main(void)
     }*/
 
     //ESP_LOGI(TAG,"databuf: %d",(int)data_buf); 
-    background_color_esp = LCD_COLOR_YELLOW;
+    background_color_esp = LCD_COLOR_LIGHTBLUE;
     defaultFont = Font16;
+    fillBackground();
   #endif
 
-  fillBackground();
+  
 
 
 
   renderFrame();
-  
 
+    /*!< Initialize the touch pad */
+    #ifdef BOARD_ESP32
+    ESP_LOGI(TAG,"render ok");
+    ESP_ERROR_CHECK(example_touch_init());
+
+    ESP_LOGI(TAG,"start touch task");
+    /*!< Start a task to show what pads have been touched */
+    xTaskCreate(&touch_pad_read_task, "touch_pad_read_task", 2048, NULL, 5, NULL);
+    ESP_LOGI(TAG,"TOUCH START ok");
+    #endif
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -304,31 +514,9 @@ int main(void)
     #endif
 
     #ifdef BOARD_ESP32
-    vTaskDelay(100);
-    ESP_LOGI(TAG,"trying to render something:");
+    //vTaskDelay(100);
     
-    /*
-    ESP_LOGI(TAG,"buffer contents: %d",data_buf[1010]);
-    for(int x=0;x<SCREEN_XSIZE;x++){
-        for(int y=0;y<SCREEN_YSIZE;y++){
-            data_buf[y*SCREEN_XSIZE+x] = background_color_esp;
-        }
-    }
-    ESP_LOGI(TAG,"buffer contents after bg: %d",data_buf[1010]);
-
-
-
-    for(int i=0;i<70;i++){
-      data_buf[1000+i]=LCD_COLOR_BLUE;
-    }
-
-    ESP_LOGI(TAG,"buffer contents 1: %d",data_buf[990]);
-    ESP_LOGI(TAG,"buffer contents 2: %d",data_buf[1010]);
-    */
-
-    lcd_set_index(0, 0, SCREEN_XSIZE - 1, SCREEN_YSIZE - 1);
-    lcd_write_data((uint8_t *)data_buf, SCREEN_XSIZE * SCREEN_YSIZE * sizeof(uint16_t));
-
+    
     #endif
   }
   /* USER CODE END 3 */
@@ -414,6 +602,7 @@ void Error_Handler(void)
   __disable_irq();
   while (1)
   {
+
   }
   /* USER CODE END Error_Handler_Debug */
 }

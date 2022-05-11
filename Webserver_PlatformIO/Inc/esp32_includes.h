@@ -8,7 +8,8 @@
 #include "esp_log.h"
 #include "esp_config.h"
 
-
+#include "driver/touch_pad.h"
+#include "freertos/queue.h"
 
 #include "lcd.h"
 #include "board.h"
