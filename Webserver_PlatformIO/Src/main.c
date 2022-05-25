@@ -21,7 +21,7 @@
 #include <errno.h>
 #include <sys/unistd.h>
 #include <sys/stat.h>
-#include <sys/times.h>
+#include <sys/time.h>
 #include <stdint.h>
 #include <stddef.h>
 #include <string.h>
@@ -285,16 +285,6 @@ int main(void)
 
   renderFrame();
 
-    /*!< Initialize the touch pad */
-    #ifdef BOARD_ESP32
-    ESP_LOGI(TAG,"render ok");
-    ESP_ERROR_CHECK(example_touch_init());
-
-    ESP_LOGI(TAG,"start touch task");
-    /*!< Start a task to show what pads have been touched */
-    xTaskCreate(&touch_pad_read_task, "touch_pad_read_task", 2048, NULL, 5, NULL);
-    ESP_LOGI(TAG,"TOUCH START ok");
-    #endif
   /* USER CODE END 2 */
 
   /* Infinite loop */
