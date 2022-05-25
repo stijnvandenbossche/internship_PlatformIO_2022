@@ -18,34 +18,36 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-#include <string.h>
-#include "crc.h"
-#include "dma2d.h"
-#include "fatfs.h"
-#include "i2c.h"
-#include "ltdc.h"
-#include "lwip.h"
-#include "sdmmc.h"
-#include "usart.h"
-#include "gpio.h"
-#include "fmc.h"
-
-/* Private includes ----------------------------------------------------------*/
-/* USER CODE BEGIN Includes */
-
-#include "init.h"
-#include "httpd.h"
 #include <errno.h>
 #include <sys/unistd.h>
 #include <sys/stat.h>
 #include <sys/times.h>
-#include "stm32746g_discovery.h"
-#include "stm32746g_discovery_sdram.h"
-#include "stm32746g_discovery_ts.h"
-#include "stm32746g_discovery_lcd.h"
+#include <stdint.h>
+#include <stddef.h>
+#include <string.h>
 
+#ifdef BOARD_STM32
+#include "stm32_includes.h"
+#endif
+
+#ifdef BOARD_ESP32
+#include "esp32_includes.h"
+#endif
+
+
+
+
+//#include "common_includes.h"
+
+/* Private includes ----------------------------------------------------------*/
+/* USER CODE BEGIN Includes */
+
+
+
+
+#ifdef BOARD_STM32
 #include "platformio_logo.h"
-
+#endif 
 
 /* USER CODE END Includes */
 
@@ -63,105 +65,6 @@
 /*SSI values*/
 #define AMOUNT_SSI_TAGS 3
 
-
-
-
-
-/*default background color*/
-#define BACKGROUND_COLOR LCD_COLOR_WHITE
-/*Default values for Menu button*/
-#define MENU_BUTTON_LOCATION_X 10
-#define MENU_BUTTON_LOCATION_Y 10
-#define MENU_BUTTON_HEIGHT 35
-#define MENU_BUTTON_WIDTH 35
-#define MENU_BUTTON_AMOUNT_STRIPES 3
-#define MENU_BUTTON_STRIPE_WIDTH MENU_BUTTON_HEIGHT/(MENU_BUTTON_AMOUNT_STRIPES*2-1)
-#define MENU_BUTTON_COLOR LCD_COLOR_BLACK
-#define MENU_BUTTON_IS_ACTIVE 0
-/*by default is displayed*/
-#define MENU_BUTTON_ISDISPLAYED 1
-
-/*Default values for IP button*/
-#define IP_BUTTON_HEIGHT 35
-#define IP_BUTTON_WIDTH 35
-#define IP_BUTTON_LOCATION_X 480 - IP_BUTTON_WIDTH - 10
-#define IP_BUTTON_LOCATION_Y 10
-#define IP_BUTTON_COLOR LCD_COLOR_BLACK
-#define IP_BUTTON_FONT Font20
-#define IP_BUTTON_PADDING_Y 10
-#define IP_BUTTON_PADDING_X 4
-/*by default is displayed*/
-#define IP_BUTTON_ISDISPLAYED 1
-
-/*Default values for IP Address*/
-#define IP_ADDRESS_HEIGHT 35
-#define IP_ADDRESS_WIDTH 150
-#define IP_ADDRESS_LOCATION_X 140
-#define IP_ADDRESS_LOCATION_Y 10
-#define IP_ADDRESS_COLOR LCD_COLOR_BLACK
-#define IP_ADDRESS_FONT Font16
-#define IP_ADDRESS_TEXT "IP address: %d.%d.%d.%d"
-/*by default is not displayed*/
-#define IP_ADDRESS_ISDISPLAYED 0
-
-/*Default values for Menu*/
-#define MENU_LOCATION_X 1
-#define MENU_LOCATION_Y 1
-#define MENU_AMOUNT_ITEMS 5 /* Home - Options - windows vs linux - info build - chat*/
-
-#define MENU_ITEM_HEIGHT 30
-#define MENU_HEIGHT MENU_AMOUNT_ITEMS*MENU_ITEM_HEIGHT + MENU_BUTTON_LOCATION_Y + MENU_BUTTON_HEIGHT + 10
-
-#define MENU_COLOR LCD_COLOR_BLACK
-#define MENU_FONT Font12
-#define MENU_WIDTH 135
-/*by default isn't displayed*/
-#define MENU_ISDISPLAYED 0
-
-/*Default values for menu items*/
-#define MENU_ITEM_HOME 1
-#define MENU_ITEM_OPTIONS 2 
-#define MENU_ITEM_BUILDINFO 3 
-#define MENU_ITEM_DIFFERENCES 4 
-#define MENU_ITEM_CHAT 5
-
-/*Page values*/
-#define PAGE_HOME MENU_ITEM_HOME
-#define PAGE_OPTIONS MENU_ITEM_OPTIONS 
-#define PAGE_BUILDINFO MENU_ITEM_BUILDINFO
-#define PAGE_DIFFERENCES MENU_ITEM_DIFFERENCES
-#define PAGE_CHAT MENU_ITEM_CHAT
-
-/*Menu item values*/
-#define MENU_ITEMS_TOP_PADDING 20
-#define MENU_ITEM_LOCATION_X 10
-#define MENU_ITEM_LOCATION_Y(itemnumber) MENU_BUTTON_LOCATION_Y + MENU_BUTTON_HEIGHT + MENU_ITEMS_TOP_PADDING + (itemnumber-1)*MENU_ITEM_HEIGHT
-
-/*Values for platformio logo*/
-//#define PIO_LOGO_DATA PLATFORMIO_LOGO_DATA
-#define PIO_LOGO_LOCATION_X 160
-#define PIO_LOGO_LOCATION_Y 40
-#define PIO_LOGO_FORMAT PLATFORMIO_LOGO_DATA_FORMAT
-#define PIO_LOGO_COLOR LCD_COLOR_WHITE /*Not used*/
-#define PIO_LOGO_WIDTH PLATFORMIO_LOGO_DATA_X_PIXEL
-#define PIO_LOGO_HEIGHT PLATFORMIO_LOGO_DATA_Y_PIXEL
-#define PIO_LOGO_ISDISPLAYED 1
-
-/*Values for background colors*/
-#define AMOUNT_BACKGROUND_COLORS 20
-#define BACKGROUND_COLORS_PER_ROW 5
-#define BACKGROUND_COLOR_AMOUNT_ROWS AMOUNT_BACKGROUND_COLORS/BACKGROUND_COLORS_PER_ROW
-
-/*Values for background color options*/
-#define BG_OPTIONS_LOCATION_X 160
-#define BG_OPTIONS_LOCATION_Y 50
-#define BG_OPTIONS_COLOR LCD_COLOR_BLACK
-#define BG_OPTIONS_ELEMENT_WIDTH 35
-#define BG_OPTIONS_ELEMENT_HEIGHT 35
-#define BG_OPTIONS_HEIGHT BG_OPTIONS_ELEMENT_WIDTH*BACKGROUND_COLOR_AMOUNT_ROWS
-#define BG_OPTIONS_WIDTH BG_OPTIONS_ELEMENT_HEIGHT*BACKGROUND_COLORS_PER_ROW
-#define BG_OPTIONS_ISDISPLAYED 0
-
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -172,6 +75,8 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
+
+#ifdef BOARD_STM32
 CRC_HandleTypeDef hcrc;
 DMA2D_HandleTypeDef hdma2d;
 I2C_HandleTypeDef hi2c3;
@@ -182,64 +87,38 @@ DMA_HandleTypeDef hdma_memtomem_dma2_stream0;
 SDRAM_HandleTypeDef hsdram1;
 
 UART_HandleTypeDef huart1;
-int cnt = 0;
+#endif
+
 
 /*SSI TAGS*/
+#ifdef BOARD_STM32
 char* ssiTags[AMOUNT_SSI_TAGS]={"DATE","TIME","LWIPVERS"};
 
+extern unsigned short PLATFORMIO_LOGO_DATA[];
 
+extern uint32_t background_color;
+extern bgcolors_array[];
+extern MENU_BUTTON menu_button;
+extern IP_BUTTON ip_button;
+extern LCD_ELEMENT lcd_element_ip_address;
+extern MENU menu;
+extern PICTURE pio_logo;
+extern BG_COLORS bg_colors;
+#endif
 
-/*LCD elements*/
-
-/*background color*/
-uint32_t background_color = BACKGROUND_COLOR;
-
-/*array with available background colors*/
-uint32_t bgcolors_array[AMOUNT_BACKGROUND_COLORS]={
-  LCD_COLOR_DARKRED     , LCD_COLOR_RED         , LCD_COLOR_LIGHTRED    , LCD_COLOR_ORANGE      , LCD_COLOR_DARKYELLOW  , 
-  LCD_COLOR_YELLOW      , LCD_COLOR_LIGHTYELLOW , LCD_COLOR_LIGHTGREEN  , LCD_COLOR_GREEN       , LCD_COLOR_DARKGREEN   , 
-  LCD_COLOR_DARKCYAN    , LCD_COLOR_CYAN        , LCD_COLOR_LIGHTBLUE   , LCD_COLOR_BLUE        , LCD_COLOR_DARKBLUE    , 
-  LCD_COLOR_DARKMAGENTA , LCD_COLOR_MAGENTA     , LCD_COLOR_LIGHTMAGENTA, LCD_COLOR_LIGHTGRAY   , LCD_COLOR_WHITE 
-};
-
-/*initialize menu_button*/
-MENU_BUTTON menu_button = {.base_element = {.locationX = MENU_BUTTON_LOCATION_X, .locationY = MENU_BUTTON_LOCATION_Y, .height=MENU_BUTTON_HEIGHT, .width = MENU_BUTTON_WIDTH, .color = MENU_BUTTON_COLOR, .isDisplayed = MENU_BUTTON_ISDISPLAYED}, .amountStripes = MENU_BUTTON_AMOUNT_STRIPES, .stripeWidth = MENU_BUTTON_STRIPE_WIDTH, .isActive = MENU_BUTTON_IS_ACTIVE };
-
-/*initialize IP_button*/
-IP_BUTTON ip_button = {.base_element = {.locationX = IP_BUTTON_LOCATION_X, .locationY = IP_BUTTON_LOCATION_Y, .height=IP_BUTTON_HEIGHT, .width = IP_BUTTON_WIDTH, .color = IP_BUTTON_COLOR, .isDisplayed = IP_BUTTON_ISDISPLAYED}, .paddingX = IP_BUTTON_PADDING_X, .paddingY = IP_BUTTON_PADDING_Y};
-
-/*initialize ip_address*/
-LCD_ELEMENT lcd_element_ip_address = {.locationX = IP_ADDRESS_LOCATION_X, .locationY = IP_ADDRESS_LOCATION_Y, .height=IP_ADDRESS_HEIGHT, .width = IP_ADDRESS_WIDTH, .color = IP_ADDRESS_COLOR, .isDisplayed = IP_ADDRESS_ISDISPLAYED};
-
-/*initialize menu*/
-MENU menu = {
-  .base_element = {.locationX = MENU_LOCATION_X, .locationY = MENU_LOCATION_Y, .height=MENU_HEIGHT, .width = MENU_WIDTH, .color = MENU_COLOR, .isDisplayed = MENU_ISDISPLAYED},
-  .amountElements = MENU_AMOUNT_ITEMS,
-  .elementHeight = MENU_ITEM_HEIGHT,
-  .elementHome = {.locationX = MENU_ITEM_LOCATION_X, .locationY = MENU_ITEM_LOCATION_Y(MENU_ITEM_HOME), .height=MENU_ITEM_HEIGHT, .width = MENU_WIDTH, .color = MENU_COLOR, .isDisplayed = MENU_ISDISPLAYED},
-  .elementOptions = {.locationX = MENU_ITEM_LOCATION_X, .locationY = MENU_ITEM_LOCATION_Y(MENU_ITEM_OPTIONS), .height=MENU_ITEM_HEIGHT, .width = MENU_WIDTH, .color = MENU_COLOR, .isDisplayed = MENU_ISDISPLAYED},
-  .elementBuildinfo = {.locationX = MENU_ITEM_LOCATION_X, .locationY = MENU_ITEM_LOCATION_Y(MENU_ITEM_BUILDINFO), .height=MENU_ITEM_HEIGHT, .width = MENU_WIDTH, .color = MENU_COLOR, .isDisplayed = MENU_ISDISPLAYED},
-  .elementDifferences = {.locationX = MENU_ITEM_LOCATION_X, .locationY = MENU_ITEM_LOCATION_Y(MENU_ITEM_DIFFERENCES), .height=MENU_ITEM_HEIGHT, .width = MENU_WIDTH, .color = MENU_COLOR, .isDisplayed = MENU_ISDISPLAYED},
-  .elementChat = {.locationX = MENU_ITEM_LOCATION_X, .locationY = MENU_ITEM_LOCATION_Y(MENU_ITEM_CHAT), .height=MENU_ITEM_HEIGHT, .width = MENU_WIDTH, .color = MENU_COLOR, .isDisplayed = MENU_ISDISPLAYED},
-  };
-
-/*initialize pio_logo*/
-
-PICTURE pio_logo = {{.locationX = PIO_LOGO_LOCATION_X, .locationY = PIO_LOGO_LOCATION_Y, .height= PIO_LOGO_HEIGHT, .width = PIO_LOGO_WIDTH, .color = PIO_LOGO_COLOR, .isDisplayed = PIO_LOGO_ISDISPLAYED},.format = PIO_LOGO_FORMAT, .data = PLATFORMIO_LOGO_DATA};
-
-/*initialize bg_colors drawing*/
-
-BG_COLORS bg_colors = {
-                        {.locationX = BG_OPTIONS_LOCATION_X, .locationY = BG_OPTIONS_LOCATION_Y, .height= BG_OPTIONS_HEIGHT, .width = BG_OPTIONS_WIDTH, .color = BG_OPTIONS_COLOR, .isDisplayed = BG_OPTIONS_ISDISPLAYED}, 
-                        .amountRows = BACKGROUND_COLOR_AMOUNT_ROWS, .colorsPerRow = BACKGROUND_COLORS_PER_ROW, .elementHeight = BG_OPTIONS_ELEMENT_HEIGHT, .elementWidth = BG_OPTIONS_ELEMENT_WIDTH
-                      };
-
+#ifdef BOARD_ESP32
+uint16_t* data_buf;
+uint16_t background_color_esp;
+sFONT defaultFont;
+#endif
 
 
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
+#ifdef BOARD_STM32
 void SystemClock_Config(void);
+#endif
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -248,6 +127,8 @@ void SystemClock_Config(void);
 /* USER CODE BEGIN 0 */
 
 /*printing over USART*/
+
+#ifdef BOARD_STM32
 int _write(int file, char *ptr, int len) {
     HAL_StatusTypeDef xStatus;
     switch (file) {
@@ -271,326 +152,10 @@ int _write(int file, char *ptr, int len) {
     }
     return len;
 }
-
-
-/*checking if a touch is within boundaries of an element*/
-int touchInBoundary(uint16_t touchX, uint16_t touchY, LCD_ELEMENT base_element){
-  return ( base_element.locationX <= touchX && touchX <= base_element.locationX + base_element.width && base_element.locationY <= touchY && touchY <= base_element.locationY + base_element.height );
-}
-
-int touchInBoundaryCoords(uint16_t touchX, uint16_t touchY, int posX, int posY, int width, int height){
-  return (posX <= touchX && touchX <= posX + width && posY <= touchY && touchY <= posY + height);
-}
-
-void handleTouch(uint16_t x, uint16_t y){
-  /*Checking if touch is on MENU BUTTON*/
-  if(menu_button.base_element.isDisplayed){
-    if(touchInBoundary(x,y,menu_button.base_element)){
-      if(!menu_button.isActive){
-
-        /*display menu + menu elements*/
-        menu.base_element.isDisplayed = 1;
-        menu.elementHome.isDisplayed = 1;
-        menu.elementOptions.isDisplayed = 1;
-        menu.elementBuildinfo.isDisplayed = 1;
-        menu.elementDifferences.isDisplayed = 1;
-        menu.elementChat.isDisplayed = 1;
-        /*change visual of menu button*/
-        menu_button.isActive = 1;
-
-      }else if(menu_button.isActive){
-        /*display menu + menu elements*/
-        menu.base_element.isDisplayed = 0;
-        menu.elementHome.isDisplayed = 0;
-        menu.elementOptions.isDisplayed = 0;
-        menu.elementBuildinfo.isDisplayed = 0;
-        menu.elementDifferences.isDisplayed = 0;
-        menu.elementChat.isDisplayed = 0;
-        /*change visual of menu button*/
-        menu_button.isActive = 0;
-      }
-
-      printf("DRAW MENU\r\n");
-    }
-  }
-
-  /*Checking if touch is on IP Button*/
-  if(ip_button.base_element.isDisplayed){
-    if(touchInBoundary(x,y,ip_button.base_element)){
-
-      if(lcd_element_ip_address.isDisplayed){
-        lcd_element_ip_address.isDisplayed=0;
-      }else if(!lcd_element_ip_address.isDisplayed){
-        lcd_element_ip_address.isDisplayed=1;
-      }
-      printf("Display IP\r\n");
-    }
-  }
-
-
-  /*Checking menu items*/
-  if(menu.base_element.isDisplayed){
-    /*element 1 - Home*/
-    if(menu.elementHome.isDisplayed){
-      if(touchInBoundary(x,y,menu.elementHome)){
-        goToPage(PAGE_HOME);
-        printf("Home pressed\r\n");
-      }
-    }
-
-    /*element 2 - Options*/
-    if(menu.elementOptions.isDisplayed){
-      if(touchInBoundary(x,y,menu.elementOptions)){
-        goToPage(PAGE_OPTIONS);
-        printf("Options pressed\r\n");
-      }
-    }
-
-    /*element 3 - Build info*/
-    if(menu.elementBuildinfo.isDisplayed){
-      if(touchInBoundary(x,y,menu.elementBuildinfo)){
-        goToPage(PAGE_BUILDINFO);
-        printf("Build Info pressed\r\n");
-      }
-    }
-  
-    /*element 4 - windows vs linux*/
-    if(menu.elementDifferences.isDisplayed){
-      if(touchInBoundary(x,y,menu.elementDifferences)){
-        goToPage(PAGE_DIFFERENCES);
-        printf("windows vs linux pressed\r\n");
-      }
-    }  
-
-    /*element 5 - chat*/
-    if(menu.elementChat.isDisplayed){
-      if(touchInBoundary(x,y,menu.elementChat)){
-        goToPage(PAGE_CHAT);
-        printf("Chat pressed\r\n");
-      }
-    }
-  }
-
-  /*Checking BG color option items*/
-  if(bg_colors.base_element.isDisplayed){
-    if(touchInBoundary(x,y,bg_colors.base_element)){
-      for(int i=0; i<(bg_colors.amountRows)*(bg_colors.colorsPerRow);i++){
-        if(touchInBoundaryCoords(
-                                x,
-                                y,
-                                bg_colors.base_element.locationX + (i % bg_colors.colorsPerRow)*bg_colors.elementWidth,
-                                bg_colors.base_element.locationY + (i / bg_colors.colorsPerRow)*bg_colors.elementHeight,
-                                bg_colors.elementWidth,
-                                bg_colors.elementHeight
-                                ))
-        {
-          printf("Color pressed: #%d\r\n",i);
-          background_color = bgcolors_array[i];
-          break;
-        }
-      }
-    }
-  }
-
-  renderFrame();
-  return;
-}
-
-
-/*Clearing all elements displayed, then re-enabling all common ones over all pages*/
-void clearElements(){
-  /*Clearing all*/
-  menu_button.base_element.isDisplayed=0;
-  ip_button.base_element.isDisplayed = 0;
-  lcd_element_ip_address.isDisplayed = 0;
-  pio_logo.base_element.isDisplayed = 0;
-  bg_colors.base_element.isDisplayed = 0;
-
-  /*Re-enabling common ones*/
-  ip_button.base_element.isDisplayed = 1;
-  menu_button.base_element.isDisplayed = 1;
-}
-
-/*Navigating to another 'page' and drawing all necessary components for that page*/
-void goToPage(int page){
-  clearElements();
-
-  switch (page){
-    case PAGE_HOME:
-      pio_logo.base_element.isDisplayed = 1;
-      break;
-    case PAGE_OPTIONS:
-      bg_colors.base_element.isDisplayed = 1;
-      break;
-    case PAGE_BUILDINFO:
-
-      break;
-    case PAGE_DIFFERENCES:
-
-      break;
-    case PAGE_CHAT:
-
-      break;
-  }
-}
-
-/*Checking all elements if they need to be displayed*/
-void renderFrame(){
-  /*clear background*/
-  BSP_LCD_SelectLayer(0);
-  BSP_LCD_Clear(background_color);
-
-  /*clear foreground*/
-  BSP_LCD_SelectLayer(1);
-  BSP_LCD_Clear(background_color);
-
-  /*Menu button*/
-  if(menu_button.base_element.isDisplayed){
-    drawMenuButton();
-  }
-
-  /*IP button*/
-  if(ip_button.base_element.isDisplayed){
-    drawIPButton();
-  }
-
-  /*IP Address*/
-  if(lcd_element_ip_address.isDisplayed){
-    drawIPAddress();
-  }
-
-  if(menu.base_element.isDisplayed){
-    drawMenu();
-  }
-
-  /*pio logo*/
-  if(pio_logo.base_element.isDisplayed){
-    drawPIOLogo();
-  }
-
-  /*BG color block options*/
-  if(bg_colors.base_element.isDisplayed){
-    drawBgColorOptions();
-  }
-
-  return;
-}
-
-
-/*Functions to render elements*/
-
-void drawMenuButton(){
-  BSP_LCD_SelectLayer(1);
-  BSP_LCD_SetTextColor(menu_button.base_element.color);
-  for(int i=0;i<menu_button.amountStripes;i++){
-    //Checking if button is active. If it is, draw hollow rectangles, otherwise draw filled ones
-    if(!menu_button.isActive){
-      BSP_LCD_FillRect(menu_button.base_element.locationX, menu_button.base_element.locationY + (menu_button.stripeWidth*2*i) , menu_button.base_element.width , menu_button.stripeWidth );
-    }else if(menu_button.isActive){
-      BSP_LCD_DrawRect(menu_button.base_element.locationX, menu_button.base_element.locationY + (menu_button.stripeWidth*2*i) , menu_button.base_element.width , menu_button.stripeWidth );
-    }
-  }
-  
-  return;
-}
-
-void drawBgColorOptions(){
-  BSP_LCD_SelectLayer(1);
-
-  int posX;
-  int posY;
-  /*Looping over all color blocks*/
-  for(int i=0;i<(bg_colors.colorsPerRow)*(bg_colors.amountRows);i++){
-    posX =  bg_colors.base_element.locationX + (i % bg_colors.colorsPerRow)*bg_colors.elementWidth; 
-    posY =  bg_colors.base_element.locationY + (i / bg_colors.colorsPerRow)*bg_colors.elementHeight;
-    /*Selecting corresponding color*/
-    BSP_LCD_SetTextColor(bgcolors_array[i]);
-    BSP_LCD_FillRect(posX,posY,bg_colors.elementWidth,bg_colors.elementHeight);
-    /*Drawing border around*/
-    BSP_LCD_SetTextColor(bg_colors.base_element.color);
-    BSP_LCD_DrawRect(posX,posY,bg_colors.elementWidth,bg_colors.elementHeight);
-  }
-  return;
-}
-
-void drawIPButton(){
-  BSP_LCD_SelectLayer(1);
-  BSP_LCD_SetTextColor(ip_button.base_element.color);
-  BSP_LCD_SetBackColor(background_color);
-
-  /*drawing border*/
-  BSP_LCD_DrawRect(ip_button.base_element.locationX,ip_button.base_element.locationY,ip_button.base_element.width,ip_button.base_element.height);
-  /*Writing 'IP'*/
-  BSP_LCD_SetFont(&IP_BUTTON_FONT);
-  BSP_LCD_DisplayStringAt(ip_button.base_element.locationX + ip_button.paddingX , ip_button.base_element.locationY + ip_button.paddingY, (uint8_t*)"IP",LEFT_MODE);
-  return;
-}
-
-void drawIPAddress(){
-  uint32_t ip = getIpAddr();
-  char* ip_addr_str;
-  sprintf(ip_addr_str,IP_ADDRESS_TEXT, (uint8_t)(ip & 0x000000ff), (uint8_t)((ip & 0x0000ff00)>>8), (uint8_t) ((ip & 0x00ff0000)>>16), (uint8_t)((ip & 0xff000000)>>24));
-        
-  /* Displaying IP Address on LCD*/
-  BSP_LCD_SelectLayer(1);
-  BSP_LCD_SetTextColor(lcd_element_ip_address.color);
-  BSP_LCD_SetBackColor(background_color);
-  BSP_LCD_SetFont(&IP_ADDRESS_FONT);
-  BSP_LCD_DisplayStringAt(lcd_element_ip_address.locationX,lcd_element_ip_address.locationY,(uint8_t*)ip_addr_str,LEFT_MODE);
-
-  return;
-}
-
-void drawMenu(){
-  BSP_LCD_SelectLayer(1);
-  BSP_LCD_SetTextColor(menu.base_element.color);
-  BSP_LCD_SetBackColor(background_color);
-
-  /*Drawing border*/
-  BSP_LCD_DrawRect(menu.base_element.locationX,menu.base_element.locationY,menu.base_element.width,menu.base_element.height);
-
-  /*Drawing elements*/
-  /*element 1 - Home*/
-  BSP_LCD_SetTextColor(menu.elementHome.color);
-  BSP_LCD_SetBackColor(background_color);
-  BSP_LCD_SetFont(&MENU_FONT);
-  BSP_LCD_DisplayStringAt(menu.elementHome.locationX,menu.elementHome.locationY,(uint8_t*)"Home",LEFT_MODE);
-
-  /*element 2 - Options*/
-  BSP_LCD_SetTextColor(menu.elementOptions.color);
-  BSP_LCD_SetBackColor(background_color);
-  BSP_LCD_SetFont(&MENU_FONT);
-  BSP_LCD_DisplayStringAt(menu.elementOptions.locationX,menu.elementOptions.locationY,(uint8_t*)"Options",LEFT_MODE);
-
-  /*element 3 - build info*/
-  BSP_LCD_SetTextColor(menu.elementBuildinfo.color);
-  BSP_LCD_SetBackColor(background_color);
-  BSP_LCD_SetFont(&MENU_FONT);
-  BSP_LCD_DisplayStringAt(menu.elementBuildinfo.locationX,menu.elementBuildinfo.locationY,(uint8_t*)"Build info",LEFT_MODE);
-
-  /*element 4 - differences*/
-  BSP_LCD_SetTextColor(menu.elementDifferences.color);
-  BSP_LCD_SetBackColor(background_color);
-  BSP_LCD_SetFont(&MENU_FONT);
-  BSP_LCD_DisplayStringAt(menu.elementDifferences.locationX,menu.elementDifferences.locationY,(uint8_t*)"Windows vs. Linux",LEFT_MODE);
-
-  /*element 5 - Chat*/
-  BSP_LCD_SetTextColor(menu.elementChat.color);
-  BSP_LCD_SetBackColor(background_color);
-  BSP_LCD_SetFont(&MENU_FONT);
-  BSP_LCD_DisplayStringAt(menu.elementChat.locationX,menu.elementChat.locationY,(uint8_t*)"Chat",LEFT_MODE);
-
-
-  return;
-}
-
-void drawPIOLogo(){
-  /*Calling custom draw function that uses DMA2D*/
-  drawBitmapImage(pio_logo.data,pio_logo.base_element.locationX,pio_logo.base_element.locationY,pio_logo.base_element.width,pio_logo.base_element.height,pio_logo.format);
-  return;
-}
-
-
+#endif
+#ifdef BOARD_ESP32
+static const char *TAG = "main";
+#endif
 
 
 
@@ -598,6 +163,8 @@ void drawPIOLogo(){
 /*Handlers for CGI & SSI*/
 
 /*parameters are in pcParam, values in pcValue*/
+
+#ifdef BOARD_STM32
 void httpd_cgi_handler(struct fs_file *file, const char* uri, int iNumParams,char **pcParam, char **pcValue){
   /*checking if uri is /cgi, this is an empty file just for cgi handling*/
   if(strncmp(uri,"/options.html",strlen("/options.html"))==0){
@@ -640,7 +207,207 @@ uint16_t mySsiHandler(const char* ssi_tag_name, char* pcInsert, int iInsertLen){
     strncpy(pcInsert,LWIP_VERSION_STRING,iInsertLen);
     return strlen(LWIP_VERSION_STRING);
   }
+  return 0;
 }
+#endif
+
+
+
+
+//code for touch
+#ifdef BOARD_ESP32
+
+#define TOUCH_BUTTON_NUM 6
+#define PAD_DEINIT 404
+
+
+static QueueHandle_t que_touch = NULL;
+typedef struct touch_msg {
+    touch_pad_intr_mask_t intr_mask;
+    uint32_t pad_num;
+    uint32_t pad_status;
+    uint32_t pad_val;
+} touch_event_t;
+
+static const touch_pad_t button[TOUCH_BUTTON_NUM] = {
+    TOUCH_BUTTON_PHOTO,      /*!< 'PHOTO' button */
+    TOUCH_BUTTON_PLAY,       /*!< 'PLAY/PAUSE' button */
+    TOUCH_BUTTON_NETWORK,    /*!< 'NETWORK' button */
+    TOUCH_BUTTON_RECORD,     /*!< 'RECORD' button */
+    TOUCH_BUTTON_VOLUP,      /*!< 'VOL_UP' button */
+    TOUCH_BUTTON_VOLDOWN,    /*!< 'VOL_DOWN' button */
+    TOUCH_BUTTON_GUARD,      /*!< Guard ring for waterproof design. */
+    /*!< If this pad be touched, other pads no response. */
+};
+
+/*!<
+ * Touch threshold. The threshold determines the sensitivity of the touch.
+ * This threshold is derived by testing changes in readings from different touch channels.
+ * If (raw_data - baseline) > baseline * threshold, the pad be activated.
+ * If (raw_data - baseline) < baseline * threshold, the pad be inactivated.
+ */
+static const float button_threshold[TOUCH_BUTTON_NUM] = {
+    0.01,     /*!< threshold = 1% */
+    0.01,
+    0.01,
+    0.01,
+    0.01,
+    0.01,
+    0.01,
+};
+
+static void tp_example_set_thresholds(void)
+{
+    uint32_t touch_value;
+    for (int i = 0; i < TOUCH_BUTTON_NUM; i++) {
+        /*!< read benchmark value */
+        touch_pad_read_benchmark(button[i], &touch_value);
+        /*!< set interrupt threshold. */
+        touch_pad_set_thresh(button[i], touch_value * button_threshold[i]);
+        ESP_LOGI(TAG, "touch pad [%d] base %d, thresh %d", \
+                 button[i], touch_value, (uint32_t)(touch_value * button_threshold[i]));
+    }
+}
+
+esp_err_t example_touch_init(void)
+{
+
+    if (que_touch == NULL) {
+        que_touch = xQueueCreate(TOUCH_BUTTON_NUM, sizeof(touch_event_t));
+    }
+
+    /*!< Initialize touch pad peripheral, it will start a timer to run a filter */
+    ESP_LOGI(TAG, "Initializing touch pad");
+    /*!< Initialize touch pad peripheral. */
+    touch_pad_init();
+
+    for (int i = 0; i < TOUCH_BUTTON_NUM; i++) {
+        touch_pad_config(button[i]);
+    }
+
+#if TOUCH_CHANGE_CONFIG
+    /*!< If you want change the touch sensor default setting, please write here(after initialize). There are examples: */
+    touch_pad_set_meas_time(TOUCH_PAD_SLEEP_CYCLE_DEFAULT, TOUCH_PAD_SLEEP_CYCLE_DEFAULT);
+    touch_pad_set_voltage(TOUCH_PAD_HIGH_VOLTAGE_THRESHOLD, TOUCH_PAD_LOW_VOLTAGE_THRESHOLD, TOUCH_PAD_ATTEN_VOLTAGE_THRESHOLD);
+    touch_pad_set_idle_channel_connect(TOUCH_PAD_IDLE_CH_CONNECT_DEFAULT);
+    for (int i = 0; i < TOUCH_BUTTON_NUM; i++) {
+        touch_pad_set_cnt_mode(i, TOUCH_PAD_SLOPE_DEFAULT, TOUCH_PAD_TIE_OPT_DEFAULT);
+    }
+#endif
+
+#if TOUCH_BUTTON_DENOISE_ENABLE
+    /*!< Denoise setting at TouchSensor 0. */
+    touch_pad_denoise_t denoise = {
+        /*!< The bits to be cancelled are determined according to the noise level. */
+        .grade     = TOUCH_PAD_DENOISE_BIT4,
+        .cap_level = TOUCH_PAD_DENOISE_CAP_L4,
+    };
+    touch_pad_denoise_set_config(&denoise);
+    touch_pad_denoise_enable();
+    ESP_LOGI(TAG, "Denoise function init");
+#endif
+
+#if TOUCH_BUTTON_WATERPROOF_ENABLE
+    /*!< Waterproof function */
+    touch_pad_waterproof_t waterproof = {
+        .guard_ring_pad = TOUCH_BUTTON_GUARD,       /*!< If no ring pad, set 0; */
+        /*!< It depends on the number of the parasitic capacitance of the shield pad. */
+        .shield_driver  = TOUCH_PAD_SHIELD_DRV_L2,  /*!< 40pf */
+    };
+    touch_pad_waterproof_set_config(&waterproof);
+    touch_pad_waterproof_enable();
+    ESP_LOGI(TAG, "touch pad waterproof init");
+#endif
+
+    /*!< Filter setting */
+    //touchsensor_filter_set(TOUCH_PAD_FILTER_IIR_16);
+    //touch_pad_timeout_set(true, SOC_TOUCH_PAD_THRESHOLD_MAX);
+    /*!< Register touch interrupt ISR, enable intr type. */
+    //touch_pad_isr_register(touchsensor_interrupt_cb, NULL, TOUCH_PAD_INTR_MASK_ALL);
+    //touch_pad_intr_enable(TOUCH_PAD_INTR_MASK_ACTIVE | TOUCH_PAD_INTR_MASK_INACTIVE | TOUCH_PAD_INTR_MASK_TIMEOUT);
+
+    /*!< Enable touch sensor clock. Work mode is "timer trigger". */
+    touch_pad_set_fsm_mode(TOUCH_FSM_MODE_TIMER);
+    touch_pad_fsm_start();
+
+    return ESP_OK;
+}
+
+
+
+void touch_pad_read_task(void *pvParameter)
+{
+    touch_event_t evt = {0};
+
+    /*!< Wait touch sensor init done */
+    vTaskDelay(100 / portTICK_RATE_MS);
+    tp_example_set_thresholds();
+
+    while (1) {
+        int ret = xQueueReceive(que_touch, &evt, (portTickType)portMAX_DELAY);
+        if (evt.pad_num == PAD_DEINIT)
+        {
+            break;
+        }
+
+        if (ret != pdTRUE || (evt.intr_mask & TOUCH_PAD_INTR_MASK_ACTIVE) == false) {
+            continue;
+        }
+
+        /*!< if guard pad be touched, other pads no response. */
+        switch (evt.pad_num) {
+            case TOUCH_BUTTON_PHOTO:
+                ESP_LOGI(TAG, "photo    -> set the red light");
+                break;
+
+            case TOUCH_BUTTON_PLAY:
+                ESP_LOGI(TAG, "play     -> set the green light");
+                break;
+
+            case TOUCH_BUTTON_NETWORK:
+                ESP_LOGI(TAG, "network  -> set the blue light");
+                break;
+
+            case TOUCH_BUTTON_RECORD:
+                ESP_LOGI(TAG, "record   -> shut down the light");
+                break;
+
+            case TOUCH_BUTTON_VOLUP:
+                
+                    
+
+                ESP_LOGI(TAG, "vol_up   -> make the light brighter:");
+                    
+                
+
+                break;
+
+            case TOUCH_BUTTON_VOLDOWN:
+                
+
+                ESP_LOGI(TAG, "vol_down -> make the light darker:");
+                    
+
+                break;
+
+            default:
+                ESP_LOGI(TAG, "ERROR\n");
+                break;
+        }
+
+
+    }
+    ESP_LOGI(TAG, "touch_pad_read_task:exit the task\n");
+    //example_touch_deinit();
+    vTaskDelete(NULL);
+}
+
+
+
+#endif
+
+
+
 
 
 
@@ -654,66 +421,77 @@ int main(void)
 {
   /* USER CODE BEGIN 1 */
 
+
+  
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
 
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
-  HAL_Init();
-
-  /* USER CODE BEGIN Init */
-
-  /* USER CODE END Init */
-
-  /* Configure the system clock */
-  SystemClock_Config();
-
-  /* USER CODE BEGIN SysInit */
-
-  /* USER CODE END SysInit */
-
-  /* Initialize all configured peripherals */
-  MX_GPIO_Init();
-  MX_LTDC_Init();
-  MX_USART1_UART_Init();
-  MX_LWIP_Init();
-  MX_CRC_Init();
-  MX_DMA2D_Init();
-  MX_FMC_Init();
-  MX_I2C3_Init();
-  MX_SDMMC1_SD_Init();
-  MX_FATFS_Init();
+  
   /* USER CODE BEGIN 2 */
-  /*setting ssi handler*/
+
+  #ifdef BOARD_STM32
   http_set_ssi_handler(mySsiHandler, ssiTags,AMOUNT_SSI_TAGS);
-  
-  httpd_init();
-  
-  /* Initialisation of LCD*/
-  BSP_LCD_Init();
-  BSP_LCD_LayerDefaultInit(1, LCD_FB_START_ADDRESS);
-  BSP_LCD_LayerDefaultInit(0, LCD_FB_START_ADDRESS + (BSP_LCD_GetXSize()*BSP_LCD_GetYSize()*4));
-  
-  BSP_LCD_DisplayOn();
-
-  /*Clear background and set background to white*/
-  BSP_LCD_SelectLayer(0);
-  BSP_LCD_Clear(LCD_COLOR_WHITE);
-
-  /*Clear foreground*/
-  BSP_LCD_SelectLayer(1);
-  BSP_LCD_Clear(LCD_COLOR_WHITE);
+  init_stm32();
 
   /*Touch Initialisations*/
   TS_StateTypeDef touchstate;
   BSP_TS_Init(480,272);
+  #endif
+  //vTaskDelay(500);
 
+  #ifdef BOARD_ESP32
+  lcd_config_t lcd_config = {
+  #ifdef CONFIG_LCD_ST7789
+        .clk_fre         = 80 * 1000 * 1000, /*!< ILI9341 Stable frequency configuration */
+  #endif
+  #ifdef CONFIG_LCD_ILI9341
+        .clk_fre         = 40 * 1000 * 1000, /*!< ILI9341 Stable frequency configuration */
+  #endif
+        .pin_clk         = LCD_CLK,
+        .pin_mosi        = LCD_MOSI,
+        .pin_dc          = LCD_DC,
+        .pin_cs          = LCD_CS,
+        .pin_rst         = LCD_RST,
+        .pin_bk          = -1, //changed to be able to use audio board for buttons
+        .max_buffer_size = 2 * 1024,
+        .horizontal      = 2, /*!< 2: UP, 3: DOWN */
+        .swap_data       = 1,
+    };
 
+    lcd_init(&lcd_config);
+    init_ESP_LCD_Buffer();
+    /*data_buf = (uint16_t *)heap_caps_calloc(SCREEN_XSIZE * SCREEN_YSIZE, sizeof(uint16_t), MALLOC_CAP_8BIT);
+    
+    if(data_buf != NULL){
+        ESP_LOGI(TAG,"LCD calloc ok");
+    }else{
+        ESP_LOGI(TAG,"LCD calloc not ok");   
+    }*/
 
-  printf("Initialised\r\n");
+    //ESP_LOGI(TAG,"databuf: %d",(int)data_buf); 
+    background_color_esp = LCD_COLOR_LIGHTBLUE;
+    defaultFont = Font16;
+    fillBackground();
+  #endif
+
   
+
+
+
   renderFrame();
-  
+
+    /*!< Initialize the touch pad */
+    #ifdef BOARD_ESP32
+    ESP_LOGI(TAG,"render ok");
+    ESP_ERROR_CHECK(example_touch_init());
+
+    ESP_LOGI(TAG,"start touch task");
+    /*!< Start a task to show what pads have been touched */
+    xTaskCreate(&touch_pad_read_task, "touch_pad_read_task", 2048, NULL, 5, NULL);
+    ESP_LOGI(TAG,"TOUCH START ok");
+    #endif
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -723,9 +501,8 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-
-    MX_LWIP_Process();   
-    
+    #ifdef BOARD_STM32
+    MX_LWIP_Process();       
 
     /*Polling touchscreen*/
     BSP_TS_GetState(&touchstate);
@@ -734,10 +511,33 @@ int main(void)
       handleTouch( *(touchstate.touchX) , *(touchstate.touchY) );
       HAL_Delay(100);
     }
+    #endif
+
+    #ifdef BOARD_ESP32
+    //vTaskDelay(100);
+    
+    
+    #endif
   }
   /* USER CODE END 3 */
 }
 
+#ifdef BOARD_ESP32
+void app_main(){
+  main();
+}
+#endif
+
+
+
+
+
+
+
+
+
+//extra functions for stm
+#ifdef BOARD_STM32
 /**
   * @brief System Clock Configuration
   * @retval None
@@ -802,9 +602,12 @@ void Error_Handler(void)
   __disable_irq();
   while (1)
   {
+
   }
   /* USER CODE END Error_Handler_Debug */
 }
+
+#endif
 
 #ifdef  USE_FULL_ASSERT
 /**

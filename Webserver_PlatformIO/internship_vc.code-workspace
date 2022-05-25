@@ -10,7 +10,19 @@
 	"settings": {
 		"files.associations": {
 			"stm32746g_discovery_lcd.h": "c",
-			"rk043fn48h.h": "c"
+			"rk043fn48h.h": "c",
+			"fmc.h": "c",
+			"platformio_logo.h": "c",
+			"stm32_lcd_functions.h": "c",
+			"esp32_includes.h": "c",
+			"esp32_lcd_functions.h": "c",
+			"esp_log.h": "c",
+			"platformio_logo_esp.h": "c",
+			"sdkconfig.h": "c",
+			"main.h": "c",
+			"lcd_elements.h": "c",
+			"stm32_includes.h": "c",
+			"stm32f7xx_hal.h": "c"
 		}
 	}
 }

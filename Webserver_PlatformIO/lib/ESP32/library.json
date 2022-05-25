@@ -1,0 +1,11 @@
+{
+    "name": "ESP32_files",
+    "version": "1.0.0",
+    "description": "files for ESP",
+    "keywords": "ESP",
+    "frameworks": "espidf",
+    "platforms": "espressif32",
+    "build":{
+      "flags":"-I lib/ESP32/include/"
+    }
+  }
