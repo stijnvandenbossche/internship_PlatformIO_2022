@@ -63,7 +63,7 @@
 /* USER CODE BEGIN PD */
 
 /*SSI values*/
-#define AMOUNT_SSI_TAGS 3
+#define AMOUNT_SSI_TAGS 13
 
 /* USER CODE END PD */
 
@@ -92,7 +92,7 @@ UART_HandleTypeDef huart1;
 
 /*SSI TAGS*/
 #ifdef BOARD_STM32
-char* ssiTags[AMOUNT_SSI_TAGS]={"DATE","TIME","LWIPVERS"};
+char* ssiTags[AMOUNT_SSI_TAGS]={"DATE","TIME","LWIPVERS","MSG1","MSG2","MSG3","MSG4","MSG5","MSG6","MSG7","MSG8","MSG9","MSG10"};
 
 extern unsigned short PLATFORMIO_LOGO_DATA[];
 
@@ -104,6 +104,8 @@ extern LCD_ELEMENT lcd_element_ip_address;
 extern MENU menu;
 extern PICTURE pio_logo;
 extern BG_COLORS bg_colors;
+extern CHAT_BOX chat_box;
+extern char* chat_messages[];
 #endif
 
 #ifdef BOARD_ESP32
@@ -166,27 +168,93 @@ static const char *TAG = "main";
 
 #ifdef BOARD_STM32
 void httpd_cgi_handler(struct fs_file *file, const char* uri, int iNumParams,char **pcParam, char **pcValue){
-  /*checking if uri is /cgi, this is an empty file just for cgi handling*/
+  
   if(strncmp(uri,"/options.html",strlen("/options.html"))==0){
     for(int i=0;i<iNumParams;i++){
       if(strncmp(pcParam[i],"bgcolor",strlen("bgcolor"))==0){
         /*checking selected color*/
-        if(strncmp(pcValue[i],"red",strlen("red"))==0){
+        if(strncmp(pcValue[i],"darkred",strlen("darkred"))==0){
+          background_color = LCD_COLOR_DARKRED;
+        } else if(strncmp(pcValue[i],"red",strlen("red"))==0){
           background_color = LCD_COLOR_RED;
+        } else if(strncmp(pcValue[i],"lightred",strlen("lightred"))==0){
+          background_color = LCD_COLOR_LIGHTRED;
+        } else if(strncmp(pcValue[i],"orange",strlen("orange"))==0){
+          background_color = LCD_COLOR_ORANGE;
+        } else if(strncmp(pcValue[i],"darkyellow",strlen("darkyellow"))==0){
+          background_color = LCD_COLOR_DARKYELLOW;
+        } 
+        
+        else if(strncmp(pcValue[i],"yellow",strlen("yellow"))==0){
+          background_color = LCD_COLOR_YELLOW;
+        } else if(strncmp(pcValue[i],"lightyellow",strlen("lightyellow"))==0){
+          background_color = LCD_COLOR_LIGHTYELLOW;
+        } else if(strncmp(pcValue[i],"lightgreen",strlen("lightgreen"))==0){
+          background_color = LCD_COLOR_LIGHTGREEN;
         } else if(strncmp(pcValue[i],"green",strlen("green"))==0){
           background_color = LCD_COLOR_GREEN;
-        } else if(strncmp(pcValue[i],"magenta",strlen("magenta"))==0){
-          background_color = LCD_COLOR_MAGENTA;
+        } else if(strncmp(pcValue[i],"darkgreen",strlen("darkgreen"))==0){
+          background_color = LCD_COLOR_DARKGREEN;
+        } 
+
+        else if(strncmp(pcValue[i],"darkcyan",strlen("darkcyan"))==0){
+          background_color = LCD_COLOR_DARKCYAN;
+        } else if(strncmp(pcValue[i],"cyan",strlen("cyan"))==0){
+          background_color = LCD_COLOR_CYAN;
+        } else if(strncmp(pcValue[i],"lightblue",strlen("lightblue"))==0){
+          background_color = LCD_COLOR_LIGHTBLUE;
         } else if(strncmp(pcValue[i],"blue",strlen("blue"))==0){
           background_color = LCD_COLOR_BLUE;
+        } else if(strncmp(pcValue[i],"darkblue",strlen("darkblue"))==0){
+          background_color = LCD_COLOR_DARKBLUE;
         }
 
+        else if(strncmp(pcValue[i],"darkmagenta",strlen("darkmagenta"))==0){
+          background_color = LCD_COLOR_DARKMAGENTA;
+        } else if(strncmp(pcValue[i],"magenta",strlen("magenta"))==0){
+          background_color = LCD_COLOR_MAGENTA;
+        } else if(strncmp(pcValue[i],"lightmagenta",strlen("lightmagenta"))==0){
+          background_color = LCD_COLOR_LIGHTMAGENTA;
+        } else if(strncmp(pcValue[i],"lightgray",strlen("lightgray"))==0){
+          background_color = LCD_COLOR_LIGHTGRAY;
+        } else if(strncmp(pcValue[i],"white",strlen("white"))==0){
+          background_color = LCD_COLOR_WHITE;
+        }
 
         /*re-rendering frame to display color*/
         renderFrame();
       }
     }
   }
+
+  /*checking for chat messages*/
+  if(strncmp(uri,"/chat.html",strlen("/chat.html"))==0){
+    for(int i=0;i<iNumParams;i++){
+      if(strncmp(pcParam[i],"chatmessage",strlen("chatmessage"))==0){
+        /* Storing message in chat_messages array, loop to store in first available place.
+           When everything is full, shift all messages and lose the oldest one
+        */
+        int j=0;
+        
+        while(chat_messages[j] != NULL && j<MAX_AMOUNT_CHAT_MESSAGES){
+          j++;
+        }
+        /* j has index of first available spot in array, if none available, j=10 */
+        if(j<MAX_AMOUNT_CHAT_MESSAGES){
+          strcpy(chat_messages[j],pcValue[i]);
+        } else if(j>=MAX_AMOUNT_CHAT_MESSAGES){
+          
+          /*shifting all over one*/
+          for(int k=0; k < (MAX_AMOUNT_CHAT_MESSAGES-1) ; k++){
+            strcpy(chat_messages[k],chat_messages[k+1]);
+          }
+          /*writing message to last open spot*/
+          strcpy(chat_messages[MAX_AMOUNT_CHAT_MESSAGES-1],pcValue[i]);
+        }        
+      }
+    }
+  }
+
   return;
 }
 
@@ -207,6 +275,19 @@ uint16_t mySsiHandler(const char* ssi_tag_name, char* pcInsert, int iInsertLen){
     strncpy(pcInsert,LWIP_VERSION_STRING,iInsertLen);
     return strlen(LWIP_VERSION_STRING);
   }
+  
+
+  /*checking for chat messages*/
+  else{
+    for(int i=0;i<MAX_AMOUNT_CHAT_MESSAGES;i++){
+      /*to be checked*/
+      if((chat_messages[i] != NULL) && (strncmp(ssi_tag_name,ssiTags[3+i],strlen(ssiTags[3+i]))==0)){
+        strncpy(pcInsert,chat_messages[i], iInsertLen);
+        return strlen(chat_messages[i]);
+      }
+    }
+  }
+
   return 0;
 }
 #endif

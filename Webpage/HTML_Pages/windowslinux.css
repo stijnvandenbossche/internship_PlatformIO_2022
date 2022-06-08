@@ -1,0 +1,22 @@
+body{
+    background-color: darkgreen;
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.content{
+    margin-left: 10px;
+}
+
+#tabletitle{
+    display: flex;
+    justify-content: center;
+}
+
+#tables{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+}
+
+

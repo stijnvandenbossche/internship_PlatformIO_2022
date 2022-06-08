@@ -3,30 +3,24 @@
     <head>
         <meta charset="utf-8">
         <title>index page</title>
+        <link rel="stylesheet" href="navigationbar.css">
         <link rel="stylesheet" href="index.css">
         <script src="jquery-3.6.0.min.js"></script>
-        <script>
-            $(document).ready(function(){
-                /*Button to go to Options*/
-                $("#options_button").click(function(){
-                    window.location.href = '/options.html';
-                    return false;
-                });
-
-                /*Button to go to platformio info*/
-                $("#pio_button").click(function(){
-                    window.location.href = '/platformio_info.shtml';
-                    return false;
-                });
-            }); 
-        </script>
     </head>
     <body>
-        <h1 id="title">INDEX</h1>
-        <p>test</p>
-        <p>nog meer testen</p>
-
-        <button id="options_button">OPTIONS</button>
-        <button id="pio_button">PIO INFO</button>
+        <div class="wrapper">
+            <div class="navigationbar">
+                <a class="active" href="index.html">Home</a>
+                <a href="options.html">Options</a>
+                <a href="platformio_info.shtml">Build info</a>
+                <a href="windowslinux.html">Windows vs. Linux</a>
+                <a href="chat.shtml">Chat</a>
+            </div>
+            <div class="content">
+                <h1 id="title">INDEX</h1>
+                <p>test</p>
+                <p>nog meer testen</p>
+            </div>
+        </div>
     </body>
 </html>

@@ -3,39 +3,158 @@
     <head>
         <meta charset="utf-8">
         <title>Options</title>
-        <link rel="stylesheet" href="index.css">
+        <link rel="stylesheet" href="navigationbar.css">
+        <link rel="stylesheet" href="options.css">
         <script src="jquery-3.6.0.min.js"></script>
         <script>
             $(document).ready(function(){
                 
                 /*redirects for color buttons, passing arguments with CGI*/
-                $('#green').click(function(){
-                    window.location.href = '/options.html?bgcolor=green';
+                $('#darkred').click(function(){
+                    window.location.href = '/options.html?bgcolor=darkred';
+                    return false;
                 });
                 $('#red').click(function(){
                     window.location.href = '/options.html?bgcolor=red';
                     return false;
                 });
-                $('#magenta').click(function(){
-                    window.location.href = '/options.html?bgcolor=magenta';
+                $('#lightred').click(function(){
+                    window.location.href = '/options.html?bgcolor=lightred';
+                    return false;
+                });
+                $('#orange').click(function(){
+                    window.location.href = '/options.html?bgcolor=orange';
+                    return false;
+                });
+                $('#darkyellow').click(function(){
+                    window.location.href = '/options.html?bgcolor=darkyellow';
+                    return false;
+                });
+
+
+                $('#yellow').click(function(){
+                    window.location.href = '/options.html?bgcolor=yellow';
+                    return false;
+                });
+                $('#lightyellow').click(function(){
+                    window.location.href = '/options.html?bgcolor=lightyellow';
+                    return false;
+                });
+                $('#lightgreen').click(function(){
+                    window.location.href = '/options.html?bgcolor=lightgreen';
+                    return false;
+                });
+                $('#green').click(function(){
+                    window.location.href = '/options.html?bgcolor=green';
+                });
+                $('#darkgreen').click(function(){
+                    window.location.href = '/options.html?bgcolor=darkgreen';
+                    return false;
+                });
+
+
+                $('#darkcyan').click(function(){
+                    window.location.href = '/options.html?bgcolor=darkcyan';
+                    return false;
+                });
+                $('#cyan').click(function(){
+                    window.location.href = '/options.html?bgcolor=cyan';
+                    return false;
+                });
+                $('#lightblue').click(function(){
+                    window.location.href = '/options.html?bgcolor=lightblue';
                     return false;
                 });
                 $('#blue').click(function(){
                     window.location.href = '/options.html?bgcolor=blue';
                     return false;
                 });
+                $('#darkblue').click(function(){
+                    window.location.href = '/options.html?bgcolor=darkblue';
+                    return false;
+                });
+
+                $('#darkmagenta').click(function(){
+                    window.location.href = '/options.html?bgcolor=darkmagenta';
+                    return false;
+                });
+                $('#magenta').click(function(){
+                    window.location.href = '/options.html?bgcolor=magenta';
+                    return false;
+                });
+                $('#lightmagenta').click(function(){
+                    window.location.href = '/options.html?bgcolor=lightmagenta';
+                    return false;
+                });
+                $('#lightgray').click(function(){
+                    window.location.href = '/options.html?bgcolor=lightgray';
+                    return false;
+                });
+                $('#white').click(function(){
+                    window.location.href = '/options.html?bgcolor=white';
+                    return false;
+                });
 
             });
+
         </script>
     </head>
     <body>
-        <h1 id="title">OPTIONS</h1>
+        <div class="wrapper">
+            <div class="navigationbar">
+                <a href="index.html">Home</a>
+                <a class="active" href="options.html">Options</a>
+                <a href="platformio_info.shtml">Build Info</a>
+                <a href="windowslinux.html">Windows vs. Linux</a>
+                <a href="chat.shtml">Chat</a>
+            </div>
 
-        <div>
-            <button id='green' class="colorbutton">GREEN</button>
-            <button id='blue' class="colorbutton">BLUE</button>
-            <button id='red' class="colorbutton">RED</button>
-            <button id='magenta' class="colorbutton">MAGENTA</button>
+            <div class="content">
+                <div>
+                    <h2>Select background color of LCD</h2>
+                </div>
+                <div id="table">
+                    <table>
+                        <div class="row">
+                            <div class="tableelement" id="darkred"></div>
+                            <div class="tableelement" id="red"></div>
+                            <div class="tableelement" id="lightred"></div>
+                            <div class="tableelement" id="orange"></div>
+                            <div class="tableelement" id="darkyellow"></div>
+                        </div>
+                        <div class="row">
+                            <div class="tableelement" id="yellow"></div>
+                            <div class="tableelement" id="lightyellow"></div>
+                            <div class="tableelement" id="lightgreen"></div>
+                            <div class="tableelement" id="green"></div>
+                            <div class="tableelement" id="darkgreen"></div>
+                        </div>
+                        <div class="row">
+                            <div class="tableelement" id="darkcyan"></div>
+                            <div class="tableelement" id="cyan"></div>
+                            <div class="tableelement" id="lightblue"></div>
+                            <div class="tableelement" id="blue"></div>
+                            <div class="tableelement" id="darkblue"></div>
+                        </div>
+                        <div class="row">
+                            <div class="tableelement" id="darkmagenta"></div>
+                            <div class="tableelement" id="magenta"></div>
+                            <div class="tableelement" id="lightmagenta"></div>
+                            <div class="tableelement" id="lightgray"></div>
+                            <div class="tableelement" id="white"></div>
+                        </div>
+                    </div>
+                </div>
+
+                
+                <!--
+                <button id='green' class="colorbutton">GREEN</button>
+                <button id='blue' class="colorbutton">BLUE</button>
+                <button id='red' class="colorbutton">RED</button>
+                <button id='magenta' class="colorbutton">MAGENTA</button>
+                -->
+            </div>
+
         </div>
     </body>
 </html>

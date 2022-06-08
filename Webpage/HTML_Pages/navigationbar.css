@@ -1,0 +1,29 @@
+
+/* background of navigationbar*/
+.navigationbar{
+    background-color: rgb(37, 35, 35);
+    overflow: hidden;
+}
+
+/*page buttons in navigationbar*/
+.navigationbar a{
+    float: left;
+    color: whitesmoke;
+    text-align: center;
+    font-size: 20px;
+    padding: 20px;
+    text-decoration: none;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/*change color on hover*/
+.navigationbar a:hover{
+    background-color: rgb(167, 159, 159);
+    color: black;
+}
+
+/*current page highlight*/
+.navigationbar a.active{
+    background-color: darkblue;
+    color: whitesmoke;
+}

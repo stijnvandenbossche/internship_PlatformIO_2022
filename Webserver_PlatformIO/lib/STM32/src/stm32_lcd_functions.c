@@ -14,6 +14,8 @@ extern LCD_ELEMENT lcd_element_ip_address;
 extern MENU menu;
 extern PICTURE pio_logo;
 extern BG_COLORS bg_colors;
+extern CHAT_BOX chat_box;
+extern char* chat_messages[];
 
 
 /*Functions to render elements*/
@@ -129,6 +131,11 @@ void drawPIOLogo(){
   return;
 }
 
+void drawChatBox(){
+
+  return;
+}
+
 
 void clearBGFG(){
     /*clear background*/
@@ -173,7 +180,10 @@ void renderFrame(){
     drawBgColorOptions();
   }
 
-  
+  /*chat box*/
+  if(chat_box.base_element.isDisplayed){
+    drawChatBox();
+  }  
 
   return;
 }

@@ -155,6 +155,26 @@
 #define BG_OPTIONS_ISDISPLAYED 0
 
 
+
+
+/*Values for chat message array*/
+#define MAX_AMOUNT_CHAT_MESSAGES 10
+#define MAX_LENGTH_CHAT_MESSAGE 100
+
+#define CHAT_BOX_LOCATION_X X_CONV(160)
+#define CHAT_BOX_LOCATION_Y Y_CONV(50)
+#define CHAT_BOX_COLOR LCD_COLOR_BLACK
+#define CHAT_BOX_HEIGHT SCREEN_YSIZE - CHAT_BOX_LOCATION_Y
+#define CHAT_BOX_WIDTH SCREEN_XSIZE - CHAT_BOX_LOCATION_X
+#define CHAT_BOX_MESSAGE_HEIGHT CHAT_BOX_HEIGHT / MAX_AMOUNT_CHAT_MESSAGES
+#ifdef BOARD_STM32
+#define CHAT_BOX_FONT Font16
+#endif
+#ifdef BOARD_ESP32
+#define CHAT_BOX_FONT Font12
+#endif
+#define CHAT_BOX_ISDISPLAYED 0
+
 /* USER CODE BEGIN EFP */
 typedef struct LCD_ELEMENT{
   /*Location is top left corner of element*/
@@ -203,6 +223,12 @@ typedef struct BG_COLORS{
   int elementWidth;
   int elementHeight;
 }BG_COLORS;
+
+typedef struct CHAT_BOX{
+  LCD_ELEMENT base_element;
+  int amountmessages;
+  int messageHeight;
+}CHAT_BOX;
 
 
 void handleTouch(uint16_t , uint16_t);

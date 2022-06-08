@@ -69,6 +69,16 @@ BG_COLORS bg_colors = {
 
 
 
+/*initialize chat box*/
+
+CHAT_BOX chat_box = {
+                      {.locationX = CHAT_BOX_LOCATION_X, .locationY = CHAT_BOX_LOCATION_Y, .height= CHAT_BOX_HEIGHT, .width = CHAT_BOX_WIDTH, .color = CHAT_BOX_COLOR, .isDisplayed = CHAT_BOX_ISDISPLAYED},
+                      .amountmessages = 0, .messageHeight = CHAT_BOX_MESSAGE_HEIGHT
+                    };
+/*initialize array to save chat messages in*/
+
+char* chat_messages[MAX_AMOUNT_CHAT_MESSAGES];
+
 
 /*checking if a touch is within boundaries of an element*/
 int touchInBoundary(uint16_t touchX, uint16_t touchY, LCD_ELEMENT base_element){
@@ -202,6 +212,7 @@ void clearElements(){
   lcd_element_ip_address.isDisplayed = 0;
   pio_logo.base_element.isDisplayed = 0;
   bg_colors.base_element.isDisplayed = 0;
+  chat_box.base_element.isDisplayed = 0;
 
   /*Re-enabling common ones*/
   ip_button.base_element.isDisplayed = 1;
@@ -226,7 +237,7 @@ void goToPage(int page){
 
       break;
     case PAGE_CHAT:
-
+      chat_box.base_element.isDisplayed = 1;
       break;
   }
 }

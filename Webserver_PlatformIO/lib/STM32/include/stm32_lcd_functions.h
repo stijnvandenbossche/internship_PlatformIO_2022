@@ -7,7 +7,9 @@ void drawIPButton(void);
 void drawIPAddress(void);
 void drawMenu(void);
 void drawPIOLogo(void);
+void drawChatBox(void);
 void clearBGFG(void);
+
 
 void renderFrame(void);
 

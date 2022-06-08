@@ -4,7 +4,6 @@ body{
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-h1#title{
-    color:yellow;
-    text-align: right;
+.content{
+    margin-left: 10px;
 }

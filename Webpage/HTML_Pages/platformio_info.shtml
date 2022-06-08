@@ -3,14 +3,27 @@
     <head>
         <meta charset="utf-8">
         <title>platformio_info</title>
+        <link rel="stylesheet" href="navigationbar.css">
         <link rel="stylesheet" href="platformio_info.css">
         <script src="jquery-3.6.0.min.js"></script>
     </head>
     <body>
-        <h1 id="title">PIO INFO</h1>
-        <p>
-            Compiled on <!--#DATE-->, at <!--#TIME-->.
-            With LWIP version <!--#LWIPVERS-->.
-        </p>
+        <div class="wrapper">
+            <div class="navigationbar">
+                <a  href="index.html">Home</a>
+                <a href="options.html">Options</a>
+                <a class="active" href="platformio_info.shtml">Build info</a>
+                <a href="windowslinux.html">Windows vs. Linux</a>
+                <a href="chat.shtml">Chat</a>
+            </div>
+            <div class="content">
+                <h1 id="title">Build info</h1>
+                    <p>
+                        Compiled on <!--#DATE-->, at <!--#TIME-->.
+                        With LWIP version <!--#LWIPVERS-->.
+                    </p>
+            </div>
+        </div>
+        
     </body>
 </html>

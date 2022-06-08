@@ -1,8 +1,15 @@
-body{
-    background-color: darkgreen;
-}
-
 h1#title{
     color:blueviolet;
     text-align: center;
+}
+
+body{
+    margin: 0px;
+    background-color: darkgreen;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.wrapper{
+    
+    margin: 0px;
 }

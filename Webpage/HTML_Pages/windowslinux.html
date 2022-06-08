@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>index page</title>
+        <link rel="stylesheet" href="navigationbar.css">
+        <link rel="stylesheet" href="windowslinux.css">
+        <script src="jquery-3.6.0.min.js"></script>
+    </head>
+    <body>
+        <div class="wrapper">
+            <div class="navigationbar">
+                <a href="index.html">Home</a>
+                <a href="options.html">Options</a>
+                <a href="platformio_info.shtml">Build info</a>
+                <a class="active" href="windowslinux.html">Windows vs. Linux</a>
+                <a href="chat.shtml">Chat</a>
+            </div>
+            <div class="content">
+                <div id="tabletitle"><h2>Compilation times (s)</h2></div>
+                <div id="tables">
+                    <div class="compilationtable">
+                        <table>
+                            <caption>STM32</caption>
+                            <tr>
+                                <th>Optimization</th>
+                                <th>Windows</th>
+                                <th>Linux</th>
+                            </tr>
+                            <tr>
+                                <td>none</td>
+                                <td>60,966</td>
+                                <td>31,690</td>
+                            </tr>
+                            <tr>
+                                <td>-O0</td>
+                                <td>60,525</td>
+                                <td>30,048</td>
+                            </tr>
+                            <tr>
+                                <td>-O1</td>
+                                <td>60,544</td>
+                                <td>28,295</td>
+                            </tr>
+                            <tr>
+                                <td>-O2</td>
+                                <td>61,304</td>
+                                <td>28,137</td>
+                            </tr>
+                            <tr>
+                                <td>-O3</td>
+                                <td>67,922</td>
+                                <td>27,949</td>
+                            </tr>
+                            <tr>
+                                <td>-Os</td>
+                                <td>68,671</td>
+                                <td>28,709</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="compilationtable">
+                        <table>
+                            <caption>ESP32</caption>
+                            <tr>
+                                <th>Optimization</th>
+                                <th>Windows</th>
+                                <th>Linux</th>
+                            </tr>
+                            <tr>
+                                <td>none</td>
+                                <td>176,043</td>
+                                <td>51,313</td>
+                            </tr>
+                            <tr>
+                                <td>-O0</td>
+                                <td>181,931</td>
+                                <td>57,184</td>
+                            </tr>
+                            <tr>
+                                <td>-O1</td>
+                                <td>194,061</td>
+                                <td>48,122</td>
+                            </tr>
+                            <tr>
+                                <td>-O2</td>
+                                <td>197,830</td>
+                                <td>49,089</td>
+                            </tr>
+                            <tr>
+                                <td>-O3</td>
+                                <td>201,266</td>
+                                <td>52,856</td>
+                            </tr>
+                            <tr>
+                                <td>-Os</td>
+                                <td>201,231</td>
+                                <td>47,831</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>    
+            </div>
+        </div>
+    </body>
+</html>

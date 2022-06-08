@@ -1,24 +1,107 @@
 body{
-    background-color: black;
+    background-color: darkgreen;
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 h1#title{
-    color:white;
+    color:#ffffff;
     text-align: left;
 }
 
-button#red{
-    color: red;
+.content{
+    margin-left: 10px;
 }
 
-button#blue{
-    color: blue;
+div#table{
+    display: table;
+    width: auto;
+    height: auto;
+    border: 1px solid black;
+    padding: 0px;
 }
 
-button#magenta{
-    color: magenta;
+div.row{
+    display: table-row;
+    width: auto;
+    height: auto;
 }
 
-button#green{
-    color:green;
+div.tableelement{
+    display: table-cell;
+    border: 1px solid black;
+    width:100px;
+    height:100px;
 }
+
+div.tableelement:hover{
+    border: 1px solid white;
+}
+div#white:hover{
+    border: 1px solid gray;
+}
+
+#darkred{
+    background-color: darkred;
+}
+#red{
+    background-color: red;
+}
+#lightred{
+    background-color: lightcoral;
+}
+#orange{
+    background-color: orange;
+}
+#darkyellow{
+    background-color: rgb(157, 147, 37);
+}
+
+#yellow{
+    background-color: yellow;
+}
+#lightyellow{
+    background-color: lightyellow;
+}
+#lightgreen{
+    background-color: lightgreen;
+}
+#green{
+    background-color: green;
+}
+#darkgreen{
+    background-color: darkgreen;
+}
+
+#darkcyan{
+    background-color: darkcyan;
+}
+#cyan{
+    background-color: cyan;
+}
+#lightblue{ 
+    background-color: lightblue;
+}
+#blue{
+    background-color: blue;
+}
+#darkblue{
+    background-color: darkblue;
+}
+
+#darkmagenta{
+    background-color: darkmagenta;
+}
+#magenta{
+    background-color: magenta;
+}
+#lightmagenta{
+    background-color: rgb(231, 154, 231);
+}
+#lightgray{
+    background-color: gray;
+}
+#white{
+    background-color: whitesmoke;
+}
+
