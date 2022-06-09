@@ -1,4 +1,4 @@
-del ..\Webserver_PlatformIO\Inc\fsdata_custom.c
+del ..\Webserver_PlatformIO\lib\STM32\include\fsdata_custom.c
 gcc ./LwIP/src/apps/http/makefsdata/makefsdata.c -o makefsdata.exe -I ./extra_files/miniz-2.1.0 -I ./LwIP/src/include -I ./LwIP/test/fuzz -I ./LwIP/system
-makefsdata.exe ./HTML_Pages -f:../Webserver_PlatformIO/Inc/fsdata_custom.c -defl
+makefsdata.exe ./HTML_Pages -f:../Webserver_PlatformIO/lib/STM32/include/fsdata_custom.c -defl
 pause
