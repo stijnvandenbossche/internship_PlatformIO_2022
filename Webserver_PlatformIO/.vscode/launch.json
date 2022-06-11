@@ -19,7 +19,7 @@
             "svdPath": "C:/Users/stijn/.platformio/platforms/ststm32/misc/svd/STM32F746.svd",
             "preLaunchTask": {
                 "type": "PlatformIO",
-                "task": "Pre-Debug"
+                "task": "Pre-Debug (disco_f746ng)"
             }
         },
         {

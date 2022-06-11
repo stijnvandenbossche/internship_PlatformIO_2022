@@ -15,7 +15,7 @@ extern MENU menu;
 extern PICTURE pio_logo;
 extern BG_COLORS bg_colors;
 extern CHAT_BOX chat_box;
-extern char* chat_messages[];
+extern char chat_messages[][MAX_LENGTH_CHAT_MESSAGE];
 
 
 /*Functions to render elements*/
@@ -132,7 +132,16 @@ void drawPIOLogo(){
 }
 
 void drawChatBox(){
+  BSP_LCD_SetTextColor(chat_box.base_element.color);
+  BSP_LCD_SetBackColor(background_color);
+  BSP_LCD_SetFont(&CHAT_BOX_FONT);
 
+  int i=0;
+  int amountMsg = chat_box.amountmessages;
+  while(i<amountMsg){
+    BSP_LCD_DisplayStringAt(chat_box.base_element.locationX, chat_box.base_element.locationY + (chat_box.messageHeight * i),(uint8_t*)(chat_messages[i]),LEFT_MODE);
+    i++;
+  }
   return;
 }
 

@@ -77,7 +77,7 @@ CHAT_BOX chat_box = {
                     };
 /*initialize array to save chat messages in*/
 
-char* chat_messages[MAX_AMOUNT_CHAT_MESSAGES];
+char chat_messages[MAX_AMOUNT_CHAT_MESSAGES][MAX_LENGTH_CHAT_MESSAGE];
 
 
 /*checking if a touch is within boundaries of an element*/
