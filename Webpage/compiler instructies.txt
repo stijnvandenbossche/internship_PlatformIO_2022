@@ -2,6 +2,8 @@ Command om compiler path in te stellen:
 
 set PATH=C:\Program Files\mingw-w64\x86_64-8.1.0-posix-seh-rt_v6-rev0\mingw64\bin;%PATH%
 
+set PATH=C:\mingw\mingw32\bin;%PATH%
+
 command om makefsdata te compileren:
 
 gcc D:\Stijn\Unief\DN\Webservices_applications\LABO3\LAB3\LwIP\src\apps\http\makefsdata\makefsdata.c -o D:\Stijn\Unief\DN\Webservices_applications\LABO3\LAB3\Site\makefsdata.exe -I D:\Stijn\Unief\DN\Webservices_applications\LABO3\LAB3\extra_bestanden_nodig_voor_compilatie\miniz-2.1.0 -I D:\Stijn\Unief\DN\Webservices_applications\LABO3\LAB3\LwIP\src\include -I D:\Stijn\Unief\DN\Webservices_applications\LABO3\LAB3\LwIP\test\fuzz -I D:\Stijn\Unief\DN\Webservices_applications\LABO3\LAB3\LwIP\system
