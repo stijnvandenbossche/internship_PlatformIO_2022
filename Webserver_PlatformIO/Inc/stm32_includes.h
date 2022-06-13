@@ -21,3 +21,6 @@
 
 #include "stm32_hw_functions.h"
 #include "stm32_lcd_functions.h"
+
+#include "minunit.h"
+#include "uri_encode.h"

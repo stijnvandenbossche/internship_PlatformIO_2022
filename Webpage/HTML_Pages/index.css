@@ -1,15 +1,46 @@
-h1#title{
-    color:blueviolet;
-    text-align: center;
-}
-
 body{
     margin: 0px;
-    background-color: darkgreen;
+    background-color: rgb(115, 214, 165);
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .wrapper{
     
     margin: 0px;
+}
+
+.content{
+    display: flex;
+    flex-direction: column;
+    max-width: 1300px;
+}
+
+#platformiotext{
+    display: flex;
+    flex-direction: row;
+}
+
+#platformiotitle{
+    text-align: center;
+    font-size: 40px;
+}
+
+#piologopng{
+    height: 400px;
+    width: 400px;
+}
+
+#piologodiv{
+    float:  left;
+    padding: 10px;
+    padding-right: 30px;
+    margin-left: 20px;
+    margin-right: 10px;
+    border-right: 1px solid black;
+}
+
+#piotextdiv{
+    padding: 10px;
+    text-align: left;
+    max-width: 900px;
 }

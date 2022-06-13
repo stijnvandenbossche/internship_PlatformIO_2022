@@ -196,3 +196,39 @@ void renderFrame(){
 
   return;
 }
+
+
+void processChatMessage(char* msg){
+  char temp[MAX_LENGTH_CHAT_MESSAGE];
+  uri_decode(msg,strlen(msg),temp);
+
+  if(strlen(temp)>=2*MAX_LENGTH_CHAT_MESSAGE){
+    strcpy(temp,"The message is too long");
+  }
+  
+  addMessage(temp);
+  
+
+  renderFrame();
+}
+
+void addMessage(char* msg){
+
+  int amountMsg = chat_box.amountmessages;        
+  if(amountMsg<MAX_AMOUNT_CHAT_MESSAGES){
+    strcpy(chat_messages[amountMsg],msg);
+    chat_box.amountmessages = chat_box.amountmessages+1;
+  }
+  /* j has index of first available spot in array, if none available, j=10 */
+  else if(amountMsg>=MAX_AMOUNT_CHAT_MESSAGES){
+    
+    /*shifting all over one*/
+    for(int k=0; k < (MAX_AMOUNT_CHAT_MESSAGES-1) ; k++){
+      strcpy(chat_messages[k],chat_messages[k+1]);
+    }
+    /*writing message to last open spot*/
+    strcpy(chat_messages[MAX_AMOUNT_CHAT_MESSAGES-1],msg);
+  }
+
+  return;
+}

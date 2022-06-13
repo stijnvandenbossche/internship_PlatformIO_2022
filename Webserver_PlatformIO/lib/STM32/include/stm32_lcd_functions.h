@@ -10,6 +10,8 @@ void drawPIOLogo(void);
 void drawChatBox(void);
 void clearBGFG(void);
 
+void processChatMessage(char*);
+void addMessage(char*);
 
 void renderFrame(void);
 

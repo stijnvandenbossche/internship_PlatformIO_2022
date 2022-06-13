@@ -92,7 +92,7 @@ UART_HandleTypeDef huart1;
 
 /*SSI TAGS*/
 #ifdef BOARD_STM32
-char* ssiTags[AMOUNT_SSI_TAGS]={"DATE","TIME","LWIPVERS","MSG1","MSG2","MSG3","MSG4","MSG5","MSG6","MSG7","MSG8","MSG9","MSG10"};
+char* ssiTags[AMOUNT_SSI_TAGS]={"DATE","TIME","LWIPVERS","MSG01","MSG02","MSG03","MSG04","MSG05","MSG06","MSG07","MSG08","MSG09","MSG10"};
 
 extern unsigned short PLATFORMIO_LOGO_DATA[];
 
@@ -228,40 +228,15 @@ void httpd_cgi_handler(struct fs_file *file, const char* uri, int iNumParams,cha
   }
 
   /*checking for chat messages*/
-  if(strncmp(uri,"/chat.html",strlen("/chat.html"))==0){
+  if(strncmp(uri,"/chat.shtml",strlen("/chat.shtml"))==0){
     for(int i=0;i<iNumParams;i++){
       if(strncmp(pcParam[i],"chatmessage",strlen("chatmessage"))==0){
         /* Storing message in chat_messages array, loop to store in first available place.
            When everything is full, shift all messages and lose the oldest one
         */
-        char temp[MAX_LENGTH_CHAT_MESSAGE];
-        char temp2[MAX_LENGTH_CHAT_MESSAGE];
-        if(strlen(pcValue[i])>=2*MAX_LENGTH_CHAT_MESSAGE){
-          strcpy(temp,"The message is too long");
-        }else if(strlen(pcValue[i])>MAX_LENGTH_CHAT_MESSAGE){
-          /*using two lines*/
-          strncpy(temp,pcValue[i],MAX_LENGTH_CHAT_MESSAGE);
-          strncpy(temp2,(char*)(pcValue[i]+MAX_LENGTH_CHAT_MESSAGE),MAX_LENGTH_CHAT_MESSAGE);
-        }else{
-          strncpy(temp,pcValue[i],MAX_LENGTH_CHAT_MESSAGE);
-        }
 
-
-        int amountMsg = chat_box.amountmessages;        
-        if(amountMsg<MAX_AMOUNT_CHAT_MESSAGES){
-          strcpy(chat_messages[amountMsg],pcValue[i]);
-          amountMsg++;
-        }
-        /* j has index of first available spot in array, if none available, j=10 */
-        else if(amountMsg>=MAX_AMOUNT_CHAT_MESSAGES){
-          
-          /*shifting all over one*/
-          for(int k=0; k < (MAX_AMOUNT_CHAT_MESSAGES-1) ; k++){
-            strcpy(chat_messages[k],chat_messages[k+1]);
-          }
-          /*writing message to last open spot*/
-          strcpy(chat_messages[MAX_AMOUNT_CHAT_MESSAGES-1],pcValue[i]);
-        }        
+        processChatMessage(pcValue[i]);
+               
       }
     }
   }
@@ -290,7 +265,7 @@ uint16_t mySsiHandler(const char* ssi_tag_name, char* pcInsert, int iInsertLen){
 
   /*checking for chat messages*/
   else{
-    for(int i=0;i<chat_box.amountmessages;i++){
+    for(int i=0;i<(chat_box.amountmessages);i++){
       /*to be checked*/
       if(strncmp(ssi_tag_name,ssiTags[3+i],strlen(ssiTags[3+i]))==0){
         strncpy(pcInsert,chat_messages[i], iInsertLen);
@@ -377,17 +352,6 @@ int main(void)
 
   renderFrame();
 
-  /*temp code to test*/
-  strcpy(chat_messages[0],"TEST 1");
-  strcpy(chat_messages[1],"TEST 2");
-  strcpy(chat_messages[2],"langere test om te testen. azazazaz azzaaz");
-  strcpy(chat_messages[3],"TEST 3");
-  strcpy(chat_messages[4],"aezyhqdsf");
-  strcpy(chat_messages[5],"cefgregergrgrg");
-  strcpy(chat_messages[6],"ad");
-  strcpy(chat_messages[7],"123212312");
-  strcpy(chat_messages[8],"efef ef feefe");
-  chat_box.amountmessages=9;
 
   /* USER CODE END 2 */
 

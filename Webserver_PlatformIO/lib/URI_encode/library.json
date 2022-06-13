@@ -1,0 +1,11 @@
+{
+    "name": "URI_encode",
+    "version": "1.0.0",
+    "description": "library for decoding uri",
+    "keywords": "URI",
+    "frameworks": "stm32cube",
+    "platforms": "ststm32",
+    "build":{
+      "flags":"-I lib/URI_encode/include/"
+    }
+  }

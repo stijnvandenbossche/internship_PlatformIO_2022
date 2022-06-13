@@ -1,16 +1,18 @@
 body{
-    background-color: darkgreen;
+    background-color: rgb(115, 214, 165);
     margin: 0;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .content{
-    margin-left: 10px;
+    margin-left: 50px;
+    max-width: 1300px;
 }
 
 #tabletitle{
     display: flex;
     justify-content: center;
+    font-size: 30px;
 }
 
 #tables{
@@ -19,4 +21,15 @@ body{
     justify-content: space-evenly;
 }
 
+td{
+    padding-right: 50px;
+    text-align: left;
+}
 
+th{
+    padding-right: 20px;
+    text-align: left;
+}
+caption{
+    padding-right: 50px;
+}

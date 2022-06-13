@@ -4,8 +4,25 @@
         <meta charset="utf-8">
         <title>Chat</title>
         <link rel="stylesheet" href="navigationbar.css">
+        <link rel="stylesheet" href="footer.css">
         <link rel="stylesheet" href="chat.css">
         <script src="jquery-3.6.0.min.js"></script>
+        <script>
+            $(document).ready(function(){
+                $('#msgbutton').click(function(){
+                    var msg = $('#msginput').val();
+                    $('#msginput').val('');
+                    var url = "/chat.shtml?chatmessage=" + msg;
+                    window.location.href = url;
+                    return false;
+                });
+
+                $('#refreshbutton').click(function(){
+                    window.location.href = "/chat.shtml";
+                    return false;
+                });
+            });
+        </script>
     </head>
     <body>
         <div class="wrapper">
@@ -17,36 +34,70 @@
                 <a class="active" href="chat.shtml">Chat</a>
             </div>
             <div class="content">
-                <h2 id="title">Chat box</h1>
-                <div class="chatmessage" id="message1">
-                    <!--#MSG1-->
+                <div class="messages">
+                    <h2 id="title">Chat box</h2>
+                    <div class="chatmessage" id="message1">
+                        <!--#MSG01-->
+                    </div>
+                    <div class="chatmessage" id="message2">
+                        <!--#MSG02-->
+                    </div>
+                    <div class="chatmessage" id="message3">
+                        <!--#MSG03-->
+                    </div>
+                    <div class="chatmessage" id="message4">
+                        <!--#MSG04-->
+                    </div>
+                    <div class="chatmessage" id="message5">
+                        <!--#MSG05-->
+                    </div>
+                    <div class="chatmessage" id="message6">
+                        <!--#MSG06-->
+                    </div>
+                    <div class="chatmessage" id="message7">
+                        <!--#MSG07-->
+                    </div>
+                    <div class="chatmessage" id="message8">
+                        <!--#MSG08-->
+                    </div>
+                    <div class="chatmessage" id="message9">
+                        <!--#MSG09-->
+                    </div>
+                    <div class="chatmessage" id="message10">
+                        <!--#MSG10-->
+                    </div>
                 </div>
-                <div class="chatmessage" id="message2">
-                    <!--#MSG2-->
+                <div class="input">
+                    <div id="msginputdiv">
+                        <input type="text" id="msginput" minlength="1" maxlength="45"/>
+                    </div>
+                    <div id="buttons">
+                        <div class="buttondiv">
+                            <button id="msgbutton">Send</button>
+                        </div>
+                        <div class="buttondiv">
+                            <button id="refreshbutton">Refresh messages</button>
+                        </div>
+                    </div>
                 </div>
-                <div class="chatmessage" id="message3">
-                    <!--#MSG3-->
+            </div>
+            <div class="footer">
+                <div class="footer_text_left">
+                    <p class="footertext">
+                        Website made by Stijn Van den bossche 
+                        during internship at Verhaert 
+                        for a bachelor's thesis at Thomas More.
+                    </p>
                 </div>
-                <div class="chatmessage" id="message4">
-                    <!--#MSG4-->
-                </div>
-                <div class="chatmessage" id="message5">
-                    <!--#MSG5-->
-                </div>
-                <div class="chatmessage" id="message6">
-                    <!--#MSG6-->
-                </div>
-                <div class="chatmessage" id="message7">
-                    <!--#MSG7-->
-                </div>
-                <div class="chatmessage" id="message8">
-                    <!--#MSG8-->
-                </div>
-                <div class="chatmessage" id="message9">
-                    <!--#MSG9-->
-                </div>
-                <div class="chatmessage" id="message10">
-                    <!--#MSG10-->
+                <div class="footer_text_right">
+                    <div>
+                        <p class="footertext">
+                            View the project on Github:
+                        </p>
+                    </div>
+                    <div id="githubdiv">
+                        <a href="https://github.com/stijnvandenbossche/internship_PlatformIO_2022"><img src="github_logo_small.png" alt="github_logo" id="githublogo"></a>
+                    </div> 
                 </div>
             </div>
         </div>

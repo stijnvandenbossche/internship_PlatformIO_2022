@@ -1,9 +1,32 @@
 body{
-    background-color: darkgreen;
+    background-color: rgb(115, 214, 165);
     margin: 0;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .content{
+    margin-left: 50px;
+}
+
+.input{
+    display: flex;
+    flex-direction: column;
+}
+
+#msginput{
+    min-width: 350px;
+}
+
+h2{
+    font-size: 40px;
+}
+
+#buttons{
+    display: flex;
+    flex-direction: row;
+}
+
+button{
     margin-left: 10px;
 }
+

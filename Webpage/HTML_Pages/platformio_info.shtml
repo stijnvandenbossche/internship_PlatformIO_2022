@@ -4,6 +4,7 @@
         <meta charset="utf-8">
         <title>platformio_info</title>
         <link rel="stylesheet" href="navigationbar.css">
+        <link rel="stylesheet" href="footer.css">
         <link rel="stylesheet" href="platformio_info.css">
         <script src="jquery-3.6.0.min.js"></script>
     </head>
@@ -17,11 +18,30 @@
                 <a href="chat.shtml">Chat</a>
             </div>
             <div class="content">
-                <h1 id="title">Build info</h1>
+                <h2 id="title">Build info</h2>
                     <p>
                         Compiled on <!--#DATE-->, at <!--#TIME-->.
                         With LWIP version <!--#LWIPVERS-->.
                     </p>
+            </div>
+            <div class="footer">
+                <div class="footer_text_left">
+                    <p class="footertext">
+                        Website made by Stijn Van den bossche 
+                        during internship at Verhaert 
+                        for a bachelor's thesis at Thomas More.
+                    </p>
+                </div>
+                <div class="footer_text_right">
+                    <div>
+                        <p class="footertext">
+                            View the project in Github:
+                        </p>
+                    </div>
+                    <div id="githubdiv">
+                        <a href="https://github.com/stijnvandenbossche/internship_PlatformIO_2022"><img src="github_logo_small.png" alt="github_logo" id="githublogo"></a>
+                    </div> 
+                </div>
             </div>
         </div>
         

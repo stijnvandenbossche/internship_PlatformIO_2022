@@ -1,10 +1,14 @@
 body{
-    background-color: darkgreen;
+    background-color: rgb(115, 214, 165);
     margin: 0;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-h1#title{
-    color:yellow;
-    text-align: right;
+h2#title{
+    text-align: left;
+    font-size: 40px;
+}
+
+.content{
+    margin-left: 50px;
 }
