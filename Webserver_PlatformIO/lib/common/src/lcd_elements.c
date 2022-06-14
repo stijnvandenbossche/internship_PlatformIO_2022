@@ -80,6 +80,36 @@ CHAT_BOX chat_box = {
 char chat_messages[MAX_AMOUNT_CHAT_MESSAGES][MAX_LENGTH_CHAT_MESSAGE];
 
 
+COMPILATION_CHART compilation_chart = 
+{
+  {.locationX = COMPILATION_TABLE_LOCATION_X, .locationY = COMPILATION_TABLE_LOCATION_Y, .height = COMPILATION_TABLE_HEIGHT, .width = COMPILATION_TABLE_WIDTH, .color = COMPILATION_TABLE_COLOR, .isDisplayed = COMPILATION_TABLE_ISDISPLAYED},
+  .selectedTable = STM_TABLE, .amountColumns = COMPILATION_TABLE_AMOUNT_COLUMNS, .amountRows = COMPILATION_TABLE_AMOUNT_ROWS, .titleHeight = COMPILATION_TABLE_TITLE_HEIGHT, .titleWidth = COMPILATION_TABLE_TITLE_WIDTH                 
+};
+
+/*3 x 6 data, +1 row of header*/
+char compilation_chart_stm[COMPILATION_TABLE_AMOUNT_COLUMNS*(COMPILATION_TABLE_AMOUNT_ROWS)][COMPILATION_TABLE_MAX_MSG_LENGTH] = 
+{
+  "Optimization","Windows","Linux",
+  "none","60,966","31,690",
+  "-O0","60,525","30,048",
+  "-O1","60,544","28,295",
+  "-O2","61,304","28,137",
+  "-O3","67,922","27,949",
+  "-Os","68,671","28,709"
+};
+
+char compilation_chart_esp[COMPILATION_TABLE_AMOUNT_COLUMNS*(COMPILATION_TABLE_AMOUNT_ROWS)][COMPILATION_TABLE_MAX_MSG_LENGTH] = 
+{
+  "Optimization","Windows","Linux",
+  "none","176,043","51,313",
+  "-O0","181,931","57,184",
+  "-O1","194,061","48,122",
+  "-O2","197,830","49,089",
+  "-O3","201,266","52,856",
+  "-Os","201,231","47,831"
+};
+
+
 /*checking if a touch is within boundaries of an element*/
 int touchInBoundary(uint16_t touchX, uint16_t touchY, LCD_ELEMENT base_element){
   return ( base_element.locationX <= touchX && touchX <= base_element.locationX + base_element.width && base_element.locationY <= touchY && touchY <= base_element.locationY + base_element.height );
@@ -199,6 +229,18 @@ void handleTouch(uint16_t x, uint16_t y){
     }
   }
 
+  /*checking Compilation chart*/
+  if(compilation_chart.base_element.isDisplayed){
+    if(touchInBoundary(x,y,compilation_chart.base_element)){
+      if(compilation_chart.selectedTable==STM_TABLE){
+        compilation_chart.selectedTable = ESP_TABLE;
+      }else if(compilation_chart.selectedTable==ESP_TABLE){
+        compilation_chart.selectedTable = STM_TABLE;
+      }
+    }
+  }
+
+
   renderFrame();
   return;
 }
@@ -213,6 +255,7 @@ void clearElements(){
   pio_logo.base_element.isDisplayed = 0;
   bg_colors.base_element.isDisplayed = 0;
   chat_box.base_element.isDisplayed = 0;
+  compilation_chart.base_element.isDisplayed = 0;
 
   /*Re-enabling common ones*/
   ip_button.base_element.isDisplayed = 1;
@@ -234,7 +277,7 @@ void goToPage(int page){
 
       break;
     case PAGE_DIFFERENCES:
-
+      compilation_chart.base_element.isDisplayed = 1;
       break;
     case PAGE_CHAT:
       chat_box.base_element.isDisplayed = 1;

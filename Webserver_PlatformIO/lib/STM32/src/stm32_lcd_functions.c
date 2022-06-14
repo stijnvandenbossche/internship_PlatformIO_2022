@@ -15,8 +15,11 @@ extern MENU menu;
 extern PICTURE pio_logo;
 extern BG_COLORS bg_colors;
 extern CHAT_BOX chat_box;
-extern char chat_messages[][MAX_LENGTH_CHAT_MESSAGE];
+extern COMPILATION_CHART compilation_chart;
 
+extern char chat_messages[][MAX_LENGTH_CHAT_MESSAGE];
+extern char compilation_chart_stm[][COMPILATION_TABLE_MAX_MSG_LENGTH];
+extern char compilation_chart_esp[][COMPILATION_TABLE_MAX_MSG_LENGTH];
 
 /*Functions to render elements*/
 
@@ -145,6 +148,37 @@ void drawChatBox(){
   return;
 }
 
+void drawCompilationChart(){
+  BSP_LCD_SetTextColor(compilation_chart.base_element.color);
+  BSP_LCD_SetBackColor(background_color);
+  
+  BSP_LCD_SetFont(&COMPILATION_TABLE_TITLE_FONT);
+
+  /*displaying table title*/
+  if(compilation_chart.selectedTable==STM_TABLE){ 
+    BSP_LCD_DisplayStringAt(compilation_chart.base_element.locationX, compilation_chart.base_element.locationY,(uint8_t*)"STM32",LEFT_MODE);
+  } else if(compilation_chart.selectedTable==ESP_TABLE){
+    BSP_LCD_DisplayStringAt(compilation_chart.base_element.locationX, compilation_chart.base_element.locationY,(uint8_t*)"ESP32",LEFT_MODE);
+  }
+
+  BSP_LCD_SetFont(&COMPILATION_TABLE_FONT);
+
+  /*looping over all content to be displayed*/
+  for(int row=0;row<compilation_chart.amountRows;row++){
+    for(int col=0;col<compilation_chart.amountColumns;col++){
+      if(compilation_chart.selectedTable == STM_TABLE){
+        BSP_LCD_DisplayStringAt( compilation_chart.base_element.locationX + col * COMPILATION_TABLE_CELL_WIDTH, compilation_chart.titleHeight + compilation_chart.base_element.locationY + row * COMPILATION_TABLE_CELL_HEIGHT, (uint8_t*) compilation_chart_stm[ row * compilation_chart.amountColumns + col], LEFT_MODE);
+      }else if(compilation_chart.selectedTable == ESP_TABLE){
+        BSP_LCD_DisplayStringAt( compilation_chart.base_element.locationX + col * COMPILATION_TABLE_CELL_WIDTH, compilation_chart.titleHeight + compilation_chart.base_element.locationY + row * COMPILATION_TABLE_CELL_HEIGHT, (uint8_t*) compilation_chart_esp[ row * compilation_chart.amountColumns + col], LEFT_MODE);
+      }
+    }
+  }
+
+ 
+
+  return;
+}
+
 
 void clearBGFG(){
     /*clear background*/
@@ -192,6 +226,11 @@ void renderFrame(){
   /*chat box*/
   if(chat_box.base_element.isDisplayed){
     drawChatBox();
+  }
+
+  /*compilation chart*/
+  if(compilation_chart.base_element.isDisplayed){
+    drawCompilationChart();
   }  
 
   return;

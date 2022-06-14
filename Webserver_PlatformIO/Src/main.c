@@ -105,6 +105,7 @@ extern MENU menu;
 extern PICTURE pio_logo;
 extern BG_COLORS bg_colors;
 extern CHAT_BOX chat_box;
+extern COMPILATION_CHART compilation_chart;
 extern char chat_messages[][MAX_LENGTH_CHAT_MESSAGE];
 #endif
 
