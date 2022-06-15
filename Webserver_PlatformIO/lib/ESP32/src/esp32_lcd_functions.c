@@ -12,8 +12,16 @@ extern LCD_ELEMENT lcd_element_ip_address;
 extern MENU menu;
 extern PICTURE pio_logo;
 extern BG_COLORS bg_colors;
+extern CHAT_BOX chat_box;
+extern COMPILATION_CHART compilation_chart;
+extern LCD_ELEMENT build_info;
 
 extern unsigned short PLATFORMIO_LOGO_ESP_DATA[];
+
+extern char chat_messages[][MAX_LENGTH_CHAT_MESSAGE];
+extern char compilation_chart_stm[][COMPILATION_TABLE_MAX_MSG_LENGTH];
+extern char compilation_chart_esp[][COMPILATION_TABLE_MAX_MSG_LENGTH];
+
 
 static const char* TAG = "esp32_lcd_functions";
 
@@ -31,10 +39,14 @@ void drawMenuButton(){
 }
 
 void drawBgColorOptions(){
+  uint16_t color = (uint16_t)(ip_button.base_element.color);
+  defaultFont = BG_OPTIONS_TITLE_FONT;
+  displayStringAt(BG_OPTIONS_TITLE_LOCATION_X,BG_OPTIONS_TITLE_LOCATION_Y,(uint8_t*)"Select background color",color,LEFT_MODE);
+
+
 
   int posX;
   int posY;
-  uint16_t color;
   /*Looping over all color blocks*/
   for(int i=0;i<(bg_colors.colorsPerRow)*(bg_colors.amountRows);i++){
     posX =  bg_colors.base_element.locationX + (i % bg_colors.colorsPerRow)*bg_colors.elementWidth; 
@@ -44,7 +56,7 @@ void drawBgColorOptions(){
     fillRect(posX,posY,bg_colors.elementWidth,bg_colors.elementHeight,color);
     /*Drawing border around*/
     color = (uint16_t)(bg_colors.base_element.color);
-    fillRect(posX,posY,bg_colors.elementWidth,bg_colors.elementHeight,color);
+    drawRect(posX,posY,bg_colors.elementWidth,bg_colors.elementHeight,color);
   }
   return;    
 }
@@ -113,6 +125,73 @@ void drawPIOLogo(){
   return;
 }
 
+void drawChatBox(){
+  ESP_LOGI(TAG,"drawing chat box");
+
+  uint16_t color = (uint16_t)(chat_box.base_element.color);
+  defaultFont = CHAT_BOX_FONT;
+
+  int i=0;
+  int amountMsg = chat_box.amountmessages;
+  while(i<amountMsg){
+    displayStringAt(chat_box.base_element.locationX, chat_box.base_element.locationY + (chat_box.messageHeight * i),(uint8_t*)(chat_messages[i]),color,LEFT_MODE);
+    i++;
+  }
+  return;
+}
+
+
+void drawCompilationChart(){
+  ESP_LOGI(TAG,"drawing compilationchart");
+  uint16_t color = (uint16_t)(compilation_chart.base_element.color);
+  
+  defaultFont = COMPILATION_TABLE_TITLE_FONT;
+
+  displayStringAt(COMPILATION_TABLE_LOCATION_X,COMP_TABLE_HEADER_LOC_Y,(uint8_t*)"Compilation times (s)",color,LEFT_MODE);
+  /*displaying table title*/
+  if(compilation_chart.selectedTable==STM_TABLE){ 
+    displayStringAt(compilation_chart.base_element.locationX, compilation_chart.base_element.locationY,(uint8_t*)"STM32",color,LEFT_MODE);
+  } else if(compilation_chart.selectedTable==ESP_TABLE){
+    displayStringAt(compilation_chart.base_element.locationX, compilation_chart.base_element.locationY,(uint8_t*)"ESP32",color,LEFT_MODE);
+  }
+
+  defaultFont = COMPILATION_TABLE_FONT;
+
+  /*looping over all content to be displayed*/
+  for(int row=0;row<compilation_chart.amountRows;row++){
+    for(int col=0;col<compilation_chart.amountColumns;col++){
+      if(compilation_chart.selectedTable == STM_TABLE){
+        displayStringAt( compilation_chart.base_element.locationX + col * COMPILATION_TABLE_CELL_WIDTH, compilation_chart.titleHeight + compilation_chart.base_element.locationY + row * COMPILATION_TABLE_CELL_HEIGHT, (uint8_t*) compilation_chart_stm[ row * compilation_chart.amountColumns + col], color,LEFT_MODE);
+      }else if(compilation_chart.selectedTable == ESP_TABLE){
+        displayStringAt( compilation_chart.base_element.locationX + col * COMPILATION_TABLE_CELL_WIDTH, compilation_chart.titleHeight + compilation_chart.base_element.locationY + row * COMPILATION_TABLE_CELL_HEIGHT, (uint8_t*) compilation_chart_esp[ row * compilation_chart.amountColumns + col], color,LEFT_MODE);
+      }
+    }
+  }
+
+ 
+
+  return;
+}
+
+
+
+void drawBuildInfo(){
+  ESP_LOGI(TAG,"drawing build info");
+  uint16_t color = (uint16_t)(build_info.color);
+  defaultFont = BUILD_INFO_FONT;
+  char string1[80] = "Compiled on ";
+  strcat(string1,__DATE__);
+  strcat(string1,",");
+
+  char string2[50] = "at ";
+  strcat(string2, __TIME__);
+  strcat(string2,".");
+
+  displayStringAt(build_info.locationX,build_info.locationY,(uint8_t*)string1,color,LEFT_MODE);
+  displayStringAt(build_info.locationX,build_info.locationY + 30,(uint8_t*)string2,color,LEFT_MODE);
+
+  return;
+}
 
 void clearBGFG(){
     fillBackground();
@@ -344,7 +423,19 @@ void renderFrame(){
     drawBgColorOptions();
   }
 
-  
+  /*chat box*/
+  if(chat_box.base_element.isDisplayed){
+    drawChatBox();
+  }
+
+  /*compilation chart*/
+  if(compilation_chart.base_element.isDisplayed){
+    drawCompilationChart();
+  }  
+
+  if(build_info.isDisplayed){
+    drawBuildInfo();
+  }
 
   lcd_set_index(0,0, SCREEN_XSIZE-1,SCREEN_YSIZE-1);
   ESP_LOGI(TAG,"attempting data buf write at: %d",(uint8_t)data_buf);

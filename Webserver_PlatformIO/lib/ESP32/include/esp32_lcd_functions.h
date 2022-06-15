@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 #include <stddef.h>
+#include <string.h>
 #include "fonts.h"
 #include "esp_heap_caps.h"
 #include "lcd_elements.h"
@@ -43,9 +44,9 @@
 #define LCD_COLOR_ORANGE ((uint16_t) 0b1111101110100000)
 
 //extra defines to ensure compatibility, to be adjusted
-#define LCD_COLOR_DARKRED ((uint16_t) 0b1111100000000000)
-#define LCD_COLOR_DARKCYAN ((uint16_t) 0b0000011111111111)
-#define LCD_COLOR_DARKMAGENTA ((uint16_t) 0b1111100000011111)
+#define LCD_COLOR_DARKRED ((uint16_t) 0b0111100000000000)
+#define LCD_COLOR_DARKCYAN ((uint16_t) 0b0000001111101111)
+#define LCD_COLOR_DARKMAGENTA ((uint16_t) 0b0111100000001111)
 
 #define CENTER_MODE 1
 #define LEFT_MODE 2
@@ -62,6 +63,9 @@ void drawIPButton(void);
 void drawIPAddress(void);
 void drawMenu(void);
 void drawPIOLogo(void);
+void drawChatBox(void);
+void drawCompilationChart(void);
+void drawBuildInfo(void);
 void clearBGFG(void);
 
 

@@ -95,19 +95,23 @@ UART_HandleTypeDef huart1;
 char* ssiTags[AMOUNT_SSI_TAGS]={"DATE","TIME","LWIPVERS","MSG01","MSG02","MSG03","MSG04","MSG05","MSG06","MSG07","MSG08","MSG09","MSG10"};
 
 extern unsigned short PLATFORMIO_LOGO_DATA[];
-
-extern uint32_t background_color;
 extern bgcolors_array[];
+extern uint32_t background_color;
+
+
+
+
 extern MENU_BUTTON menu_button;
 extern IP_BUTTON ip_button;
 extern LCD_ELEMENT lcd_element_ip_address;
 extern MENU menu;
 extern PICTURE pio_logo;
 extern BG_COLORS bg_colors;
-extern CHAT_BOX chat_box;
+
 extern COMPILATION_CHART compilation_chart;
-extern char chat_messages[][MAX_LENGTH_CHAT_MESSAGE];
 #endif
+extern char chat_messages[][MAX_LENGTH_CHAT_MESSAGE];
+extern CHAT_BOX chat_box;
 
 #ifdef BOARD_ESP32
 uint16_t* data_buf;
@@ -345,6 +349,12 @@ int main(void)
     background_color_esp = LCD_COLOR_LIGHTBLUE;
     defaultFont = Font16;
     fillBackground();
+
+    strcpy(chat_messages[0],"Message 1");
+    strcpy(chat_messages[1],"Msg2");
+    chat_box.amountmessages = 2;
+
+
   #endif
 
   
@@ -376,9 +386,22 @@ int main(void)
     #endif
 
     #ifdef BOARD_ESP32
-    //vTaskDelay(100);
-    
-    
+    goToPage(PAGE_HOME);
+    renderFrame();
+    vTaskDelay(1000);
+    goToPage(PAGE_OPTIONS);
+    renderFrame();
+    vTaskDelay(1000);
+    goToPage(PAGE_BUILDINFO);
+    renderFrame();
+    vTaskDelay(1000);
+    goToPage(PAGE_DIFFERENCES);
+    renderFrame();
+    vTaskDelay(1000);
+    goToPage(PAGE_CHAT);
+    renderFrame();
+    vTaskDelay(1000);
+
     #endif
   }
   /* USER CODE END 3 */
