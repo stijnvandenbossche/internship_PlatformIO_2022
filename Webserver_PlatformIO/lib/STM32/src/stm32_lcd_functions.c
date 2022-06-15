@@ -16,6 +16,7 @@ extern PICTURE pio_logo;
 extern BG_COLORS bg_colors;
 extern CHAT_BOX chat_box;
 extern COMPILATION_CHART compilation_chart;
+extern LCD_ELEMENT build_info;
 
 extern char chat_messages[][MAX_LENGTH_CHAT_MESSAGE];
 extern char compilation_chart_stm[][COMPILATION_TABLE_MAX_MSG_LENGTH];
@@ -40,6 +41,10 @@ void drawMenuButton(){
 
 void drawBgColorOptions(){
   BSP_LCD_SelectLayer(1);
+
+  BSP_LCD_SetBackColor(background_color);
+  BSP_LCD_SetFont(&BG_OPTIONS_TITLE_FONT);
+  BSP_LCD_DisplayStringAt(BG_OPTIONS_TITLE_LOCATION_X,BG_OPTIONS_TITLE_LOCATION_Y,(uint8_t*)"Select background color",LEFT_MODE);
 
   int posX;
   int posY;
@@ -154,6 +159,7 @@ void drawCompilationChart(){
   
   BSP_LCD_SetFont(&COMPILATION_TABLE_TITLE_FONT);
 
+  BSP_LCD_DisplayStringAt(COMPILATION_TABLE_LOCATION_X,COMP_TABLE_HEADER_LOC_Y,(uint8_t*)"Compilation times (s)",LEFT_MODE);
   /*displaying table title*/
   if(compilation_chart.selectedTable==STM_TABLE){ 
     BSP_LCD_DisplayStringAt(compilation_chart.base_element.locationX, compilation_chart.base_element.locationY,(uint8_t*)"STM32",LEFT_MODE);
@@ -179,6 +185,25 @@ void drawCompilationChart(){
   return;
 }
 
+
+void drawBuildInfo(){
+  BSP_LCD_SetTextColor(build_info.color);
+  BSP_LCD_SetBackColor(background_color);
+  
+  BSP_LCD_SetFont(&BUILD_INFO_FONT);
+  char string1[80] = "Compiled on ";
+  strcat(string1,__DATE__);
+  strcat(string1,",");
+
+  char string2[50] = "at ";
+  strcat(string2, __TIME__);
+  strcat(string2,".");
+
+  BSP_LCD_DisplayStringAt(build_info.locationX,build_info.locationY,(uint8_t*)string1,LEFT_MODE);
+  BSP_LCD_DisplayStringAt(build_info.locationX,build_info.locationY + 30,(uint8_t*)string2,LEFT_MODE);
+
+  return;
+}
 
 void clearBGFG(){
     /*clear background*/
@@ -233,6 +258,9 @@ void renderFrame(){
     drawCompilationChart();
   }  
 
+  if(build_info.isDisplayed){
+    drawBuildInfo();
+  }
   return;
 }
 

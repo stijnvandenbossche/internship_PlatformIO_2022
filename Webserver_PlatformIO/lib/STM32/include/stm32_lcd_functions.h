@@ -9,6 +9,7 @@ void drawMenu(void);
 void drawPIOLogo(void);
 void drawChatBox(void);
 void drawCompilationChart(void);
+void drawBuildInfo(void);
 void clearBGFG(void);
 
 void processChatMessage(char*);

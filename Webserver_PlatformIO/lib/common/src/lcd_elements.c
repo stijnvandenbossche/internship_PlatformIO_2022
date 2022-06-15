@@ -86,6 +86,8 @@ COMPILATION_CHART compilation_chart =
   .selectedTable = STM_TABLE, .amountColumns = COMPILATION_TABLE_AMOUNT_COLUMNS, .amountRows = COMPILATION_TABLE_AMOUNT_ROWS, .titleHeight = COMPILATION_TABLE_TITLE_HEIGHT, .titleWidth = COMPILATION_TABLE_TITLE_WIDTH                 
 };
 
+LCD_ELEMENT build_info = {.locationX = BUILD_INFO_LOCATION_X, .locationY = BUILD_INFO_LOCATION_Y,.height=0,.width=0,.color=BUILD_INFO_COLOR,.isDisplayed=BUILD_INFO_ISDISPLAYED};
+
 /*3 x 6 data, +1 row of header*/
 char compilation_chart_stm[COMPILATION_TABLE_AMOUNT_COLUMNS*(COMPILATION_TABLE_AMOUNT_ROWS)][COMPILATION_TABLE_MAX_MSG_LENGTH] = 
 {
@@ -256,6 +258,7 @@ void clearElements(){
   bg_colors.base_element.isDisplayed = 0;
   chat_box.base_element.isDisplayed = 0;
   compilation_chart.base_element.isDisplayed = 0;
+  build_info.isDisplayed = 0;
 
   /*Re-enabling common ones*/
   ip_button.base_element.isDisplayed = 1;
@@ -274,7 +277,7 @@ void goToPage(int page){
       bg_colors.base_element.isDisplayed = 1;
       break;
     case PAGE_BUILDINFO:
-
+      build_info.isDisplayed = 1;
       break;
     case PAGE_DIFFERENCES:
       compilation_chart.base_element.isDisplayed = 1;
